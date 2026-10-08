@@ -159,18 +159,31 @@ export default function RankingLayout({ children }: { children: React.ReactNode 
             </span>
           </div>
           
-          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             {isLoggedIn ? (
-              <div className="flex items-center gap-2 sm:gap-3 bg-white pl-3 sm:pl-4 pr-1.5 py-1 sm:py-1.5 rounded-full shadow-sm border border-[#e8e4d8]">
-                <div className="flex flex-col items-end min-w-0">
-                  <span className="text-[11px] sm:text-xs font-black text-[#111] truncate max-w-[85px] sm:max-w-none">{userName}</span>
-                  <span className="text-[8px] sm:text-[9px] font-bold text-[#f56d29] uppercase tracking-wider truncate max-w-[85px] sm:max-w-none">
-                    {hasPurchasedOver20 ? "Clasificado" : "20% OFF"}
-                  </span>
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <div className="flex items-center gap-1.5 sm:gap-3 bg-white pl-2.5 sm:pl-4 pr-1.5 py-1 sm:py-1.5 rounded-full shadow-sm border border-[#e8e4d8]">
+                  <div className="flex flex-col items-end min-w-0">
+                    <span className="text-[11px] sm:text-xs font-black text-[#111] truncate max-w-[65px] sm:max-w-none">{userName}</span>
+                    <span className="text-[8px] sm:text-[9px] font-bold text-[#f56d29] uppercase tracking-wider truncate max-w-[65px] sm:max-w-none">
+                      {hasPurchasedOver20 ? "Clasificado" : "20% OFF"}
+                    </span>
+                  </div>
+                  <div className="w-7 h-7 sm:w-9 sm:h-9 bg-[#111] rounded-full flex items-center justify-center text-white font-bold text-[10px] sm:text-xs uppercase shadow-sm shrink-0">
+                    {userName.charAt(0)}
+                  </div>
                 </div>
-                <div className="w-7 h-7 sm:w-9 sm:h-9 bg-[#111] rounded-full flex items-center justify-center text-white font-bold text-[10px] sm:text-xs uppercase shadow-sm shrink-0">
-                  {userName.charAt(0)}
-                </div>
+
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  title="Cerrar sesión"
+                  className="flex items-center gap-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 px-2 sm:px-3 py-1.5 rounded-full text-[10px] sm:text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer shrink-0"
+                  aria-label="Cerrar sesión"
+                >
+                  <LogOut className="w-3.5 h-3.5 shrink-0" />
+                  <span className="hidden sm:inline">Salir</span>
+                </button>
               </div>
             ) : (
               <Link 
