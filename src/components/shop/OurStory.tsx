@@ -7,16 +7,20 @@ export function OurStory() {
     <section id="nosotros" className="w-full bg-[#fdfbf7] py-16 md:py-24">
       <div className="mx-auto max-w-7xl px-4 md:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
         
-        {/* Left: Official GAB Chips poster image with floating badge */}
+        {/* Left: Official GAB Chips video without sound with floating badge */}
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           className="relative w-full rounded-3xl overflow-hidden aspect-[4/5] max-h-[620px] bg-[#1a1a1a] shadow-xl border border-[#ede8dd]"
         >
-          <img
-            src="/images/sobre-nosotros.jpg"
-            alt="GAB Chips - Las mejores papas crunch con sal"
+          <video
+            src="/sobre-nosotros.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
             className="w-full h-full object-cover"
           />
           <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:bottom-6 bg-white/95 backdrop-blur-md rounded-2xl p-3.5 sm:p-4 shadow-xl border border-white/50 sm:max-w-[240px]">
