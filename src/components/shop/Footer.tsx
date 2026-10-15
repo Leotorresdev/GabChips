@@ -102,7 +102,7 @@ export function Footer() {
             <h4 className="font-extrabold text-white">Contacto</h4>
             <ul className="mt-4 space-y-2 text-sm text-[#aaa]">
               <li className="flex items-center gap-2">
-                <Phone className="h-4 w-4 text-[#f56d29]" /> 0412-5589074
+                <Phone className="h-4 w-4 text-[#f56d29]" /> 0424-4493286
               </li>
               <li className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-[#f56d29]" /> Caracas, Venezuela

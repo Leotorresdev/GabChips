@@ -25,7 +25,7 @@ export function Stats() {
         
         <div className="flex items-center w-full md:w-auto shrink-0">
           <a 
-            href="https://wa.me/584125589074?text=Hola%20GAB%20Chips,%20quisiera%20hacer%20un%20pedido%20o%20consultar%20por%20volumen" 
+            href="https://wa.me/584244493286?text=Hola%20GAB%20Chips,%20quisiera%20hacer%20un%20pedido%20o%20consultar%20por%20volumen" 
             target="_blank"
             rel="noopener noreferrer"
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1ebd5a] text-white px-8 py-4 rounded-2xl font-black text-sm text-center uppercase tracking-wider transition-all shadow-xl shadow-green-500/25 hover:scale-105 active:scale-95"

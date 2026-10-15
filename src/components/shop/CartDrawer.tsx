@@ -21,6 +21,7 @@ export function CartDrawer() {
     items,
     increment,
     decrement,
+    setQuantity,
     remove,
     subtotal,
   } = useCart();
@@ -61,7 +62,7 @@ export function CartDrawer() {
               <button
                 type="button"
                 onClick={close}
-                className="grid h-10 w-10 place-items-center rounded-full hover:bg-black/5 text-[#555]"
+                className="grid h-10 w-10 place-items-center rounded-full hover:bg-black/5 text-[#555] cursor-pointer"
                 aria-label="Cerrar"
               >
                 <X className="h-5 w-5" />
@@ -81,87 +82,173 @@ export function CartDrawer() {
                   <button
                     type="button"
                     onClick={close}
-                    className="mt-8 rounded-full bg-[#111] px-8 py-3.5 text-xs font-black uppercase tracking-widest text-white hover:bg-[#f56d29] transition-colors shadow-lg hover:shadow-orange-500/30"
+                    className="mt-8 rounded-full bg-[#111] px-8 py-3.5 text-xs font-black uppercase tracking-widest text-white hover:bg-[#f56d29] transition-colors shadow-lg hover:shadow-orange-500/30 cursor-pointer"
                   >
                     Ver Productos
                   </button>
                 </div>
               ) : (
-                <ul className="space-y-4">
-                  <AnimatePresence initial={false}>
-                    {items.map((item) => {
-                      const isWholesale = item.quantity >= item.wholesaleMin;
-                      const activePrice = isWholesale ? item.wholesalePrice : item.price;
-                      const lineTotal = activePrice * item.quantity;
-                      const savedTotal = isWholesale ? (item.price - item.wholesalePrice) * item.quantity : 0;
+                <div>
+                  {/* Banner de compra por docenas y precio mayorista */}
+                  <div className="mb-4 rounded-xl bg-orange-50/80 border border-orange-200/80 p-3 flex items-center gap-2.5">
+                    <span className="text-xl">📦</span>
+                    <p className="text-[11px] text-[#444] font-medium leading-tight">
+                      <strong className="text-[#f56d29] font-black">¡Pide por docenas!</strong> Disfruta de precio mayorista especial ($0.80 c/u) a partir de 12 unidades.
+                    </p>
+                  </div>
 
-                      return (
-                        <motion.li
-                          key={item.id}
-                          layout
-                          initial={{ opacity: 0, scale: 0.95 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.95 }}
-                          className="flex gap-4 rounded-2xl bg-white p-4 shadow-sm border border-[#e8e2d9] relative overflow-hidden"
-                        >
-                          {isWholesale && (
-                            <div className="absolute top-0 right-0 bg-[#4CAF50] text-white text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-bl-lg z-10 flex items-center gap-1">
-                              <Sparkles className="w-3 h-3" /> Precio Mayorista
-                            </div>
-                          )}
-                          <div className="h-24 w-24 shrink-0 rounded-xl bg-[#fdfbf7] p-1 border border-[#e8e2d9]">
-                            <img
-                              src={item.image}
-                              alt={item.name}
-                              className="h-full w-full object-cover rounded-lg"
-                            />
-                          </div>
-                          <div className="flex flex-1 flex-col">
-                            <div className="flex items-start justify-between gap-2">
-                              <div>
-                                <h3 className="text-sm font-black uppercase text-[#111] leading-tight">
+                  <ul className="space-y-4">
+                    <AnimatePresence initial={false}>
+                      {items.map((item) => {
+                        const isWholesale = item.quantity >= item.wholesaleMin;
+                        const activePrice = isWholesale ? item.wholesalePrice : item.price;
+                        const lineTotal = activePrice * item.quantity;
+                        const currentDozens = Math.floor(item.quantity / 12);
+                        const extraUnits = item.quantity % 12;
+
+                        return (
+                          <motion.li
+                            key={item.id}
+                            layout
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="flex flex-col gap-3 rounded-2xl bg-white p-4 shadow-sm border border-[#e8e2d9] relative overflow-hidden"
+                          >
+                            {isWholesale && (
+                              <div className="absolute top-0 right-0 bg-[#4CAF50] text-white text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-bl-lg z-10 flex items-center gap-1 shadow-2xs">
+                                <Sparkles className="w-3 h-3" /> Precio Mayorista
+                              </div>
+                            )}
+
+                            <div className="flex gap-3.5 items-start">
+                              <div className="h-20 w-20 shrink-0 rounded-xl bg-[#fdfbf7] p-1 border border-[#e8e2d9]">
+                                <img
+                                  src={item.image}
+                                  alt={item.name}
+                                  className="h-full w-full object-cover rounded-lg"
+                                />
+                              </div>
+
+                              <div className="flex flex-1 flex-col min-w-0 pr-6">
+                                <h3 className="text-sm font-black uppercase text-[#111] leading-tight truncate">
                                   {item.name}
                                 </h3>
+
                                 {isWholesale ? (
-                                  <p className="mt-1 text-[10px] font-bold text-[#4CAF50]">
-                                    Ahorrando ${(item.price - item.wholesalePrice).toFixed(2)} c/u
+                                  <p className="mt-1 text-[10px] font-bold text-[#4CAF50] flex items-center gap-1">
+                                    <Sparkles className="w-2.5 h-2.5" /> Ahorras ${(item.price - item.wholesalePrice).toFixed(2)} c/u ($0.80 c/u)
                                   </p>
                                 ) : (
-                                  <p className="mt-1 text-[10px] font-bold text-[#888]">
-                                    Faltan {item.wholesaleMin - item.quantity} para precio mayorista
-                                  </p>
+                                  <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+                                    <span className="text-[10px] font-bold text-[#888]">
+                                      Faltan {item.wholesaleMin - item.quantity}u para mayorista
+                                    </span>
+                                    <button
+                                      type="button"
+                                      onClick={() => setQuantity(item.id, 12)}
+                                      className="text-[9px] font-black text-[#f56d29] underline hover:text-[#d45618] cursor-pointer"
+                                    >
+                                      Llevar a 1 docena
+                                    </button>
+                                  </div>
                                 )}
                               </div>
+
                               <button
                                 type="button"
                                 onClick={() => remove(item.id)}
-                                className="text-[#888] hover:text-red-500 transition-colors p-1"
+                                className="text-[#888] hover:text-red-500 transition-colors p-1 absolute top-3 right-3 cursor-pointer"
                                 aria-label="Eliminar"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>
                             </div>
 
-                            <div className="mt-auto flex items-end justify-between">
-                              <div className="flex items-center gap-1 rounded-lg bg-[#fdfbf7] border border-[#e8e2d9] p-1 shadow-inner">
+                            {/* Acceso Rápido por Docenas */}
+                            <div className="pt-2.5 border-t border-[#f0ede6] flex flex-wrap items-center justify-between gap-1.5">
+                              <span className="text-[9px] font-black uppercase tracking-wider text-[#777] flex items-center gap-1">
+                                <Sparkles className="w-2.5 h-2.5 text-[#f56d29]" /> Docenas:
+                              </span>
+                              <div className="flex items-center gap-1">
                                 <button
                                   type="button"
-                                  onClick={() => decrement(item.id)}
-                                  className="grid h-7 w-7 place-items-center rounded-md bg-white shadow-sm hover:bg-[#f56d29] hover:text-white transition-colors"
+                                  onClick={() => setQuantity(item.id, 12)}
+                                  className={`px-2 py-0.5 rounded-md font-bold text-[9px] transition-all cursor-pointer ${
+                                    item.quantity === 12
+                                      ? "bg-[#f56d29] text-white shadow-2xs font-black"
+                                      : "bg-[#f5f2eb] text-[#555] hover:bg-[#ede8dd] hover:text-[#111]"
+                                  }`}
+                                  title="Fijar en 1 docena (12 unidades)"
                                 >
-                                  <Minus className="h-3.5 w-3.5" strokeWidth={3} />
+                                  1 Docena (12)
                                 </button>
-                                <span className="w-8 text-center text-sm font-black text-[#111]">
-                                  {item.quantity}
-                                </span>
                                 <button
                                   type="button"
-                                  onClick={() => increment(item.id)}
-                                  className="grid h-7 w-7 place-items-center rounded-md bg-white shadow-sm hover:bg-[#f56d29] hover:text-white transition-colors"
+                                  onClick={() => setQuantity(item.id, 24)}
+                                  className={`px-2 py-0.5 rounded-md font-bold text-[9px] transition-all cursor-pointer ${
+                                    item.quantity === 24
+                                      ? "bg-[#f56d29] text-white shadow-2xs font-black"
+                                      : "bg-[#f5f2eb] text-[#555] hover:bg-[#ede8dd] hover:text-[#111]"
+                                  }`}
+                                  title="Fijar en 2 docenas (24 unidades)"
                                 >
-                                  <Plus className="h-3.5 w-3.5" strokeWidth={3} />
+                                  2 Docenas (24)
                                 </button>
+                                <button
+                                  type="button"
+                                  onClick={() => increment(item.id, 12)}
+                                  className="px-2 py-0.5 rounded-md font-black text-[9px] bg-orange-100 text-[#f56d29] hover:bg-orange-200 transition-all cursor-pointer"
+                                  title="Sumar +12 unidades"
+                                >
+                                  +1 Doc.
+                                </button>
+                                {item.quantity >= 12 && (
+                                  <button
+                                    type="button"
+                                    onClick={() => decrement(item.id, 12)}
+                                    className="px-1.5 py-0.5 rounded-md font-bold text-[9px] bg-gray-100 text-[#666] hover:bg-gray-200 transition-all cursor-pointer"
+                                    title="Restar 12 unidades"
+                                  >
+                                    -1 Doc.
+                                  </button>
+                                )}
                               </div>
+                            </div>
+
+                            {/* Stepper de Unidades y Monto Total */}
+                            <div className="flex items-center justify-between pt-1">
+                              <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-1 rounded-lg bg-[#fdfbf7] border border-[#e8e2d9] p-1 shadow-inner">
+                                  <button
+                                    type="button"
+                                    onClick={() => decrement(item.id, 1)}
+                                    className="grid h-7 w-7 place-items-center rounded-md bg-white shadow-xs hover:bg-[#f56d29] hover:text-white transition-colors cursor-pointer text-[#555]"
+                                    title="Restar 1 unidad"
+                                  >
+                                    <Minus className="h-3.5 w-3.5" strokeWidth={3} />
+                                  </button>
+                                  <span className="w-8 text-center text-sm font-black text-[#111]">
+                                    {item.quantity}
+                                  </span>
+                                  <button
+                                    type="button"
+                                    onClick={() => increment(item.id, 1)}
+                                    className="grid h-7 w-7 place-items-center rounded-md bg-white shadow-xs hover:bg-[#f56d29] hover:text-white transition-colors cursor-pointer text-[#555]"
+                                    title="Sumar 1 unidad"
+                                  >
+                                    <Plus className="h-3.5 w-3.5" strokeWidth={3} />
+                                  </button>
+                                </div>
+
+                                {item.quantity >= 12 && (
+                                  <span className="text-[10px] font-black text-[#f56d29] bg-orange-50 px-2 py-1 rounded-lg border border-orange-200/80">
+                                    {currentDozens} {currentDozens === 1 ? "docena" : "docenas"}
+                                    {extraUnits > 0 ? ` + ${extraUnits}u` : ""}
+                                  </span>
+                                )}
+                              </div>
+
                               <div className="text-right">
                                 {isWholesale && (
                                   <span className="block text-[10px] line-through text-[#888] font-bold">
@@ -173,12 +260,12 @@ export function CartDrawer() {
                                 </span>
                               </div>
                             </div>
-                          </div>
-                        </motion.li>
-                      );
-                    })}
-                  </AnimatePresence>
-                </ul>
+                          </motion.li>
+                        );
+                      })}
+                    </AnimatePresence>
+                  </ul>
+                </div>
               )}
             </div>
 

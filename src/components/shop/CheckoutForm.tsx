@@ -20,7 +20,7 @@ import { useBcv } from "@/hooks/useBcv";
 const DATOS_EMPRESA = [
   { label: "Banco Receptor", value: "0191 · Banco Nacional de Crédito (BNC)" },
   { label: "RIF de la Empresa", value: "J-505151452" },
-  { label: "Teléfono", value: "0412-5589074" },
+  { label: "Teléfono", value: "0424-4493286" },
   { label: "Cuenta Corriente", value: "0191-0261-16-2100074044" },
   { label: "Beneficiario", value: "EMPRENDIMIENTO GABRIEL GARCIA 11" },
 ];
@@ -101,7 +101,7 @@ export function CheckoutForm() {
             id: i.id,
             name: i.name,
             quantity: i.quantity,
-            price: i.price,
+            price: i.quantity >= i.wholesaleMin ? i.wholesalePrice : i.price,
           })),
         }),
       });

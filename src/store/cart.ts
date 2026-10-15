@@ -29,10 +29,11 @@ type CartState = {
   isOpen: boolean;
   deliveryType: DeliveryType;
   deliveryInfo: DeliveryInfo;
-  add: (item: Omit<CartItem, "quantity">) => void;
+  add: (item: Omit<CartItem, "quantity">, quantity?: number) => void;
   remove: (id: string) => void;
-  increment: (id: string) => void;
-  decrement: (id: string) => void;
+  increment: (id: string, amount?: number) => void;
+  decrement: (id: string, amount?: number) => void;
+  setQuantity: (id: string, quantity: number) => void;
   clear: () => void;
   open: () => void;
   close: () => void;
@@ -54,33 +55,41 @@ export const useCart = create<CartState>()(
         reference: "",
         phone: "",
       },
-      add: (item) =>
+      add: (item, quantity = 1) =>
         set((s) => {
+          const qty = Math.max(1, quantity);
           const existing = s.items.find((i) => i.id === item.id);
           if (existing) {
             return {
               items: s.items.map((i) =>
-                i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i,
+                i.id === item.id ? { ...i, quantity: i.quantity + qty } : i,
               ),
             };
           }
-          return { items: [...s.items, { ...item, quantity: 1 }] };
+          return { items: [...s.items, { ...item, quantity: qty }] };
         }),
       remove: (id) =>
         set((s) => ({ items: s.items.filter((i) => i.id !== id) })),
-      increment: (id) =>
+      increment: (id, amount = 1) =>
         set((s) => ({
           items: s.items.map((i) =>
-            i.id === id ? { ...i, quantity: i.quantity + 1 } : i,
+            i.id === id ? { ...i, quantity: i.quantity + amount } : i,
           ),
         })),
-      decrement: (id) =>
+      decrement: (id, amount = 1) =>
         set((s) => ({
           items: s.items
             .map((i) =>
-              i.id === id ? { ...i, quantity: i.quantity - 1 } : i,
+              i.id === id ? { ...i, quantity: i.quantity - amount } : i,
             )
             .filter((i) => i.quantity > 0),
+        })),
+      setQuantity: (id, quantity) =>
+        set((s) => ({
+          items:
+            quantity <= 0
+              ? s.items.filter((i) => i.id !== id)
+              : s.items.map((i) => (i.id === id ? { ...i, quantity } : i)),
         })),
       clear: () => set({ items: [] }),
       open: () => set({ isOpen: true }),
