@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingBag, Menu, X, Trophy } from "lucide-react";
+import { ShoppingBag, Menu, X, Trophy, Lock, User, Mail, Sparkles } from "lucide-react";
 import { useCart } from "@/store/cart";
 import { useUser } from "@/store/user";
 import { supabase } from "@/lib/supabase";
+import { authenticateCustomer, registerCustomer } from "@/lib/auth-service";
 
 const navItems = [
   { label: "Inicio", href: "/#inicio" },
@@ -22,13 +23,21 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [loginMode, setLoginMode] = useState<"quick" | "register">("quick");
+  
+  // Login
   const [quickUsername, setQuickUsername] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+
+  // Registro
   const [name, setName] = useState("");
+  const [regUsername, setRegUsername] = useState("");
   const [email, setEmail] = useState("");
+  const [regPassword, setRegPassword] = useState("");
+
   const [authMsg, setAuthMsg] = useState("");
   const [loadingAuth, setLoadingAuth] = useState(false);
   
-  const { isLoggedIn, name: userName, email: userEmail, login, setTotalComprado } = useUser();
+  const { isLoggedIn, name: userName, username: userHandle, email: userEmail, login, setTotalComprado } = useUser();
   const count = useCart((s) => s.items.reduce((n, i) => n + i.quantity, 0));
   const openCart = useCart((s) => s.open);
   const pathname = usePathname();
@@ -44,12 +53,14 @@ export function Header() {
 
   // Mantener la sesión sincronizada con Supabase para usuarios ya registrados
   useEffect(() => {
-    if (isLoggedIn && (userName || userEmail)) {
+    if (isLoggedIn && (userHandle || userEmail || userName)) {
       const syncSession = async () => {
         try {
           let query = supabase.from('clientes').select('*');
           if (userEmail) {
             query = query.eq('correo', userEmail.toLowerCase());
+          } else if (userHandle) {
+            query = query.or(`username.eq.${userHandle},nombre.ilike.%${userHandle}%`);
           } else {
             query = query.ilike('nombre', userName);
           }
@@ -63,91 +74,53 @@ export function Header() {
       };
       syncSession();
     }
-  }, [isLoggedIn, userName, userEmail, setTotalComprado]);
+  }, [isLoggedIn, userName, userHandle, userEmail, setTotalComprado]);
 
-  // Ingreso Rápido con solo Nombre de Usuario (para usuarios ya registrados)
+  // Iniciar Sesión con Nombre de Usuario (o Correo) y Contraseña
   const handleQuickLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const cleanUser = quickUsername.trim();
-    if (!cleanUser) return;
     setLoadingAuth(true);
     setAuthMsg("");
 
     try {
-      const { data: clients, error } = await supabase
-        .from('clientes')
-        .select('*')
-        .or(`nombre.ilike.%${cleanUser}%,correo.ilike.%${cleanUser}%`)
-        .order('total_comprado', { ascending: false })
-        .limit(1);
+      const customer = await authenticateCustomer({
+        usernameOrEmail: quickUsername,
+        password: loginPassword,
+      });
 
-      if (clients && clients.length > 0) {
-        const client = clients[0];
-        login(client.nombre || cleanUser, client.correo || "", Number(client.total_comprado || 0));
-        setShowLogin(false);
-        setLoadingAuth(false);
-        router.push('/ranking');
-      } else {
-        setAuthMsg(`No encontramos a ningún usuario registrado como "${cleanUser}". Si aún no te has registrado, usa la opción "Nuevo (20% OFF)".`);
-        setLoadingAuth(false);
-      }
-    } catch (err: any) {
-      console.error("Error al buscar usuario:", err);
-      login(cleanUser, "", 0);
+      login(customer.nombre, customer.correo, customer.total_comprado, customer.username);
       setShowLogin(false);
       setLoadingAuth(false);
+      setLoginPassword("");
       router.push('/ranking');
+    } catch (err: any) {
+      setAuthMsg(err.message || "Error al iniciar sesión.");
+      setLoadingAuth(false);
     }
   };
 
-  // Registro de nuevo usuario (20% OFF)
+  // Registro de nuevo usuario con Usuario único, Correo y Contraseña
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoadingAuth(true);
     setAuthMsg("");
 
-    const cleanEmail = email.trim().toLowerCase();
-    const cleanName = name.trim();
-
     try {
-      const { data: existingClient } = await supabase
-        .from('clientes')
-        .select('*')
-        .eq('correo', cleanEmail)
-        .maybeSingle();
+      const customer = await registerCustomer({
+        nombre: name,
+        username: regUsername,
+        correo: email,
+        password: regPassword,
+      });
 
-      let clientTotal = 0;
-      let finalName = cleanName;
-
-      if (existingClient) {
-        clientTotal = Number(existingClient.total_comprado || 0);
-        if (existingClient.nombre) {
-          finalName = existingClient.nombre;
-        }
-      } else {
-        const { error: insertError } = await supabase
-          .from('clientes')
-          .insert([{ 
-            nombre: cleanName, 
-            correo: cleanEmail, 
-            total_comprado: 0 
-          }]);
-
-        if (insertError) {
-          console.error("Error al registrar cliente en Supabase:", insertError);
-        }
-      }
-
-      login(finalName, cleanEmail, clientTotal);
+      login(customer.nombre, customer.correo, customer.total_comprado, customer.username);
       setShowLogin(false);
       setLoadingAuth(false);
+      setRegPassword("");
       router.push('/ranking');
     } catch (err: any) {
-      console.error("Error en flujo de registro:", err);
-      login(cleanName, cleanEmail, 0);
-      setShowLogin(false);
+      setAuthMsg(err.message || "Error en flujo de registro.");
       setLoadingAuth(false);
-      router.push('/ranking');
     }
   };
 
@@ -378,28 +351,49 @@ export function Header() {
                 <>
                   <h3 className="text-xl font-black text-center mb-1">Ingreso al Ranking</h3>
                   <p className="text-xs text-gray-500 text-center mb-5">
-                    ¿Ya estás registrado? Ingresa con tu <strong>nombre de usuario</strong> para acceder de inmediato a tu sesión y posición.
+                    Ingresa con tu <strong>nombre de usuario</strong> (o correo) y tu contraseña para acceder a tu sesión oficial.
                   </p>
                   
                   <form onSubmit={handleQuickLogin} className="flex flex-col gap-3.5">
                     <div>
                       <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1">
-                        Nombre de Usuario Registrado
+                        Nombre de Usuario o Correo
                       </label>
-                      <input 
-                        type="text" 
-                        required
-                        autoFocus
-                        placeholder="Ej: Juan Pérez"
-                        value={quickUsername}
-                        onChange={(e) => setQuickUsername(e.target.value)}
-                        className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm font-semibold outline-none focus:border-[#f56d29] focus:ring-2 focus:ring-[#f56d29]/20"
-                      />
+                      <div className="relative">
+                        <User className="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5" />
+                        <input 
+                          type="text" 
+                          required
+                          autoFocus
+                          placeholder="Ej: luis23 o tu@correo.com"
+                          value={quickUsername}
+                          onChange={(e) => setQuickUsername(e.target.value)}
+                          className="w-full rounded-xl border border-gray-200 bg-gray-50 pl-10 pr-4 py-3 text-sm font-semibold outline-none focus:border-[#f56d29] focus:ring-2 focus:ring-[#f56d29]/20 text-[#111]"
+                        />
+                      </div>
                     </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1">
+                        Contraseña
+                      </label>
+                      <div className="relative">
+                        <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5" />
+                        <input 
+                          type="password" 
+                          required
+                          placeholder="••••••••"
+                          value={loginPassword}
+                          onChange={(e) => setLoginPassword(e.target.value)}
+                          className="w-full rounded-xl border border-gray-200 bg-gray-50 pl-10 pr-4 py-3 text-sm font-semibold outline-none focus:border-[#f56d29] focus:ring-2 focus:ring-[#f56d29]/20 text-[#111]"
+                        />
+                      </div>
+                    </div>
+
                     <button 
                       type="submit" 
                       disabled={loadingAuth}
-                      className="w-full bg-[#111] hover:bg-[#f56d29] text-white font-black uppercase tracking-wider py-3.5 rounded-xl transition-all disabled:opacity-50 shadow-md text-xs mt-1"
+                      className="w-full bg-[#111] hover:bg-[#f56d29] text-white font-black uppercase tracking-wider py-3.5 rounded-xl transition-all disabled:opacity-50 shadow-md text-xs mt-1 cursor-pointer"
                     >
                       {loadingAuth ? "Verificando..." : "Ingresar a mi Cuenta"}
                     </button>
@@ -416,34 +410,77 @@ export function Header() {
                   <form onSubmit={handleRegister} className="flex flex-col gap-3">
                     <div>
                       <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1">
-                        Nombre y Apellido
+                        Nombre Completo
                       </label>
                       <input 
                         type="text" 
                         required
-                        placeholder="Tu Nombre"
+                        placeholder="Ej: Luis García"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:border-[#f56d29] focus:ring-2 focus:ring-[#f56d29]/20"
+                        className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:border-[#f56d29] focus:ring-2 focus:ring-[#f56d29]/20 text-[#111]"
                       />
                     </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1">
+                        Nombre de Usuario Único (Sin espacios)
+                      </label>
+                      <div className="relative">
+                        <span className="absolute left-3.5 top-3 text-gray-400 font-bold text-sm">@</span>
+                        <input 
+                          type="text" 
+                          required
+                          placeholder="luis_garcia"
+                          value={regUsername}
+                          onChange={(e) => setRegUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_.-]/g, ''))}
+                          className="w-full rounded-xl border border-gray-200 bg-gray-50 pl-8 pr-4 py-3 text-sm font-semibold outline-none focus:border-[#f56d29] focus:ring-2 focus:ring-[#f56d29]/20 text-[#111]"
+                        />
+                      </div>
+                      <span className="text-[9px] text-gray-400 font-medium mt-0.5 block">
+                        Este será tu alias público en el ranking para identificarte.
+                      </span>
+                    </div>
+
                     <div>
                       <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1">
                         Correo Electrónico
                       </label>
-                      <input 
-                        type="email" 
-                        required
-                        placeholder="tu@correo.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:border-[#f56d29] focus:ring-2 focus:ring-[#f56d29]/20"
-                      />
+                      <div className="relative">
+                        <Mail className="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5" />
+                        <input 
+                          type="email" 
+                          required
+                          placeholder="tu@correo.com"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="w-full rounded-xl border border-gray-200 bg-gray-50 pl-10 pr-4 py-3 text-sm outline-none focus:border-[#f56d29] focus:ring-2 focus:ring-[#f56d29]/20 text-[#111]"
+                        />
+                      </div>
                     </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1">
+                        Contraseña Personalizada
+                      </label>
+                      <div className="relative">
+                        <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5" />
+                        <input 
+                          type="password" 
+                          required
+                          minLength={4}
+                          placeholder="Crea tu contraseña (mínimo 4 caracteres)"
+                          value={regPassword}
+                          onChange={(e) => setRegPassword(e.target.value)}
+                          className="w-full rounded-xl border border-gray-200 bg-gray-50 pl-10 pr-4 py-3 text-sm outline-none focus:border-[#f56d29] focus:ring-2 focus:ring-[#f56d29]/20 text-[#111]"
+                        />
+                      </div>
+                    </div>
+
                     <button 
                       type="submit" 
                       disabled={loadingAuth}
-                      className="w-full bg-[#f56d29] hover:bg-[#e05819] text-white font-black uppercase tracking-wider py-3.5 rounded-xl transition-all disabled:opacity-50 shadow-md text-xs mt-1"
+                      className="w-full bg-[#f56d29] hover:bg-[#e05819] text-white font-black uppercase tracking-wider py-3.5 rounded-xl transition-all disabled:opacity-50 shadow-md text-xs mt-1 cursor-pointer"
                     >
                       {loadingAuth ? "Registrando..." : "Activar 20% OFF y Guardar"}
                     </button>

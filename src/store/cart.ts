@@ -15,13 +15,22 @@ export type CartItem = {
   quantity: number;
 };
 
-export type DeliveryType = "delivery" | "pickup";
+export type DeliveryType = "delivery" | "nacional" | "pickup";
 
 export type DeliveryInfo = {
+  // Local (Caracas)
   street: string;
   number: string;
   reference: string;
   phone: string;
+
+  // Envíos Nacionales (Otros Estados de Venezuela)
+  state: string;
+  city: string;
+  agency: string;
+  agencyAddress: string;
+  idNumber: string;
+  receiverName: string;
 };
 
 type CartState = {
@@ -54,6 +63,12 @@ export const useCart = create<CartState>()(
         number: "",
         reference: "",
         phone: "",
+        state: "Carabobo",
+        city: "",
+        agency: "MRW",
+        agencyAddress: "",
+        idNumber: "",
+        receiverName: "",
       },
       add: (item, quantity = 1) =>
         set((s) => {

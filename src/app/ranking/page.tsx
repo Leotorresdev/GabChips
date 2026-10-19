@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
   Trophy,
   Medal, 
@@ -15,14 +15,21 @@ import {
   RefreshCw, 
   ShoppingBag, 
   Sparkles, 
-  UserCheck 
+  UserCheck,
+  Lock,
+  User,
+  Mail,
+  UserPlus,
+  LogIn
 } from "lucide-react";
 import { useUser } from "@/store/user";
 import { supabase } from "@/lib/supabase";
+import { authenticateCustomer, registerCustomer } from "@/lib/auth-service";
 
 type ClienteDB = {
   id?: string;
   nombre: string;
+  username?: string;
   correo: string;
   total_comprado: number | string;
   ordenes_count?: number;
@@ -30,11 +37,22 @@ type ClienteDB = {
 };
 
 export default function RankingPage() {
-  const { isLoggedIn, name: userName, email: userEmail, totalComprado, login } = useUser();
+  const { isLoggedIn, name: userName, username: userHandle, email: userEmail, totalComprado, login } = useUser();
   const [clientes, setClientes] = useState<ClienteDB[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"clasificados" | "todos">("clasificados");
+
+  // Auth States en el Ranking
+  const [rankingRegMode, setRankingRegMode] = useState(false);
   const [rankingUserInput, setRankingUserInput] = useState("");
+  const [rankingPasswordInput, setRankingPasswordInput] = useState("");
+  
+  // Registro directo en ranking
+  const [regName, setRegName] = useState("");
+  const [regUsername, setRegUsername] = useState("");
+  const [regEmail, setRegEmail] = useState("");
+  const [regPassword, setRegPassword] = useState("");
+
   const [rankingAuthMsg, setRankingAuthMsg] = useState("");
   const [rankingLoading, setRankingLoading] = useState(false);
 
@@ -63,7 +81,7 @@ export default function RankingPage() {
     fetchRanking();
   }, [fetchRanking]);
 
-  // Ingreso directo por nombre de usuario para usuarios ya registrados
+  // Ingreso oficial con nombre de usuario / correo y contraseña
   const handleRankingQuickLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const clean = rankingUserInput.trim();
@@ -72,23 +90,42 @@ export default function RankingPage() {
     setRankingAuthMsg("");
 
     try {
-      const { data: found } = await supabase
-        .from("clientes")
-        .select("*")
-        .or(`nombre.ilike.%${clean}%,correo.ilike.%${clean}%`)
-        .order("total_comprado", { ascending: false })
-        .limit(1);
+      const customer = await authenticateCustomer({
+        usernameOrEmail: clean,
+        password: rankingPasswordInput,
+      });
 
-      if (found && found.length > 0) {
-        const c = found[0];
-        login(c.nombre || clean, c.correo || "", Number(c.total_comprado || 0));
-        setRankingUserInput("");
-      } else {
-        setRankingAuthMsg(`No se encontró registro para "${clean}". Regístrate para clasificar.`);
-      }
-    } catch (err) {
-      console.error(err);
-      login(clean, "", 0);
+      login(customer.nombre, customer.correo, customer.total_comprado, customer.username);
+      setRankingUserInput("");
+      setRankingPasswordInput("");
+      fetchRanking();
+    } catch (err: any) {
+      setRankingAuthMsg(err.message || "Error al autenticar usuario.");
+    } finally {
+      setRankingLoading(false);
+    }
+  };
+
+  // Registro oficial desde la página de ranking
+  const handleRankingRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setRankingLoading(true);
+    setRankingAuthMsg("");
+
+    try {
+      const customer = await registerCustomer({
+        nombre: regName,
+        username: regUsername,
+        correo: regEmail,
+        password: regPassword,
+      });
+
+      login(customer.nombre, customer.correo, customer.total_comprado, customer.username);
+      setRankingRegMode(false);
+      setRegPassword("");
+      fetchRanking();
+    } catch (err: any) {
+      setRankingAuthMsg(err.message || "Error al registrar cuenta.");
     } finally {
       setRankingLoading(false);
     }
@@ -108,6 +145,8 @@ export default function RankingPage() {
   // Datos del usuario logueado en la base de datos
   const myRecord = userEmail 
     ? clientes.find((c) => c.correo?.toLowerCase() === userEmail.toLowerCase()) 
+    : userHandle
+    ? clientes.find((c) => c.username?.toLowerCase() === userHandle.toLowerCase() || c.nombre?.toLowerCase().includes(userHandle.toLowerCase()))
     : null;
 
   // Priorizamos el total de la base de datos real, o el del store local si acaba de registrarse
@@ -117,6 +156,8 @@ export default function RankingPage() {
   // Posición del usuario en el ranking (si está clasificado)
   const myRankIndex = userEmail 
     ? clasificados.findIndex((c) => c.correo?.toLowerCase() === userEmail.toLowerCase()) 
+    : userHandle
+    ? clasificados.findIndex((c) => c.username?.toLowerCase() === userHandle.toLowerCase() || c.nombre?.toLowerCase().includes(userHandle.toLowerCase()))
     : -1;
   const myRank = myRankIndex !== -1 ? myRankIndex + 1 : null;
 
@@ -229,45 +270,167 @@ export default function RankingPage() {
           )
         ) : (
           // Caso 3: Usuario anónimo / no ha iniciado sesión
-          <div className="bg-white border border-[#e8e4d8] rounded-3xl p-6 md:p-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 shadow-sm">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-[#f56d29]/10 text-[#f56d29] flex items-center justify-center shrink-0">
-                <AlertCircle className="w-6 h-6" />
+          <div className="bg-white border border-[#e8e4d8] rounded-3xl p-6 md:p-8 shadow-sm">
+            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 pb-4 border-b border-gray-100 mb-6">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-[#f56d29]/10 text-[#f56d29] flex items-center justify-center shrink-0">
+                  <AlertCircle className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black text-[#111]">
+                    {rankingRegMode ? "Regístrate en la Comunidad GAB" : "Consulta tu posición en el Ranking"}
+                  </h3>
+                  <p className="text-xs text-[#666] font-medium mt-0.5">
+                    {rankingRegMode 
+                      ? "Crea tu cuenta con un nombre de usuario único y contraseña para formar parte del Ranking Oficial."
+                      : "Ingresa con tu nombre de usuario (o correo) y tu contraseña personalizada para ver tus puntos acumulados."}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-lg font-black text-[#111]">Consulta tu posición en el Ranking</h3>
-                <p className="text-xs text-[#666] font-medium mt-0.5">
-                  Si ya te has registrado, ingresa con tu <strong>nombre de usuario</strong> para abrir tu sesión y ver tus compras acumuladas.
-                </p>
-                {rankingAuthMsg && (
-                  <p className="text-xs text-red-500 font-bold mt-1.5">{rankingAuthMsg}</p>
-                )}
-              </div>
-            </div>
-            
-            <form onSubmit={handleRankingQuickLogin} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full lg:w-auto">
-              <input
-                type="text"
-                required
-                placeholder="Nombre de Usuario"
-                value={rankingUserInput}
-                onChange={(e) => setRankingUserInput(e.target.value)}
-                className="w-full sm:w-56 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-xs font-semibold outline-none focus:border-[#f56d29] focus:ring-2 focus:ring-[#f56d29]/20 text-[#111]"
-              />
+
+              {/* Botón para alternar entre Iniciar Sesión y Registrarse */}
               <button
-                type="submit"
-                disabled={rankingLoading}
-                className="bg-[#111] hover:bg-[#f56d29] text-white text-xs font-black uppercase tracking-wider px-5 py-3 rounded-xl transition-all shadow-sm shrink-0 whitespace-nowrap disabled:opacity-50"
+                type="button"
+                onClick={() => { setRankingRegMode(!rankingRegMode); setRankingAuthMsg(""); }}
+                className="text-xs font-black uppercase tracking-wider text-[#f56d29] hover:text-[#d45618] underline cursor-pointer"
               >
-                {rankingLoading ? "Buscando..." : "Ingresar"}
+                {rankingRegMode ? "← Ya tengo cuenta (Iniciar Sesión)" : "¿No tienes cuenta? Regístrate aquí →"}
               </button>
-              <Link 
-                href="/#productos"
-                className="bg-[#f56d29] hover:bg-[#e05819] text-white text-xs font-bold uppercase tracking-wider px-4 py-3 rounded-xl transition-all shadow-sm shrink-0 text-center"
-              >
-                Comprar
-              </Link>
-            </form>
+            </div>
+
+            {rankingAuthMsg && (
+              <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-xs font-bold text-red-600">
+                {rankingAuthMsg}
+              </div>
+            )}
+
+            {!rankingRegMode ? (
+              // Formulario de Inicio de Sesión
+              <form onSubmit={handleRankingQuickLogin} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 items-end">
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1">
+                    Nombre de Usuario o Correo
+                  </label>
+                  <div className="relative">
+                    <User className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
+                    <input
+                      type="text"
+                      required
+                      placeholder="Ej: luis23 o tu@correo.com"
+                      value={rankingUserInput}
+                      onChange={(e) => setRankingUserInput(e.target.value)}
+                      className="w-full rounded-xl border border-gray-200 bg-gray-50 pl-10 pr-3 py-2.5 text-xs font-semibold outline-none focus:border-[#f56d29] focus:ring-2 focus:ring-[#f56d29]/20 text-[#111]"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1">
+                    Contraseña
+                  </label>
+                  <div className="relative">
+                    <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
+                    <input
+                      type="password"
+                      required
+                      placeholder="••••••••"
+                      value={rankingPasswordInput}
+                      onChange={(e) => setRankingPasswordInput(e.target.value)}
+                      className="w-full rounded-xl border border-gray-200 bg-gray-50 pl-10 pr-3 py-2.5 text-xs font-semibold outline-none focus:border-[#f56d29] focus:ring-2 focus:ring-[#f56d29]/20 text-[#111]"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="submit"
+                    disabled={rankingLoading}
+                    className="flex-1 bg-[#111] hover:bg-[#f56d29] text-white text-xs font-black uppercase tracking-wider px-5 py-3 rounded-xl transition-all shadow-sm shrink-0 whitespace-nowrap disabled:opacity-50 cursor-pointer"
+                  >
+                    {rankingLoading ? "Verificando..." : "Ingresar"}
+                  </button>
+                  <Link 
+                    href="/#productos"
+                    className="bg-[#f56d29] hover:bg-[#e05819] text-white text-xs font-bold uppercase tracking-wider px-4 py-3 rounded-xl transition-all shadow-sm shrink-0 text-center"
+                  >
+                    Comprar
+                  </Link>
+                </div>
+              </form>
+            ) : (
+              // Formulario de Nuevo Registro
+              <form onSubmit={handleRankingRegister} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1">
+                    Nombre Completo
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Ej: Luis García"
+                    value={regName}
+                    onChange={(e) => setRegName(e.target.value)}
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-xs font-semibold outline-none focus:border-[#f56d29] focus:ring-2 focus:ring-[#f56d29]/20 text-[#111]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1">
+                    Usuario Único (@alias)
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-2.5 text-gray-400 font-bold text-xs">@</span>
+                    <input
+                      type="text"
+                      required
+                      placeholder="luis_chips"
+                      value={regUsername}
+                      onChange={(e) => setRegUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_.-]/g, ''))}
+                      className="w-full rounded-xl border border-gray-200 bg-gray-50 pl-7 pr-3 py-2.5 text-xs font-semibold outline-none focus:border-[#f56d29] focus:ring-2 focus:ring-[#f56d29]/20 text-[#111]"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1">
+                    Correo Electrónico
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    placeholder="tu@correo.com"
+                    value={regEmail}
+                    onChange={(e) => setRegEmail(e.target.value)}
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-xs font-semibold outline-none focus:border-[#f56d29] focus:ring-2 focus:ring-[#f56d29]/20 text-[#111]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1">
+                    Contraseña Personalizada
+                  </label>
+                  <input
+                    type="password"
+                    required
+                    minLength={4}
+                    placeholder="Mínimo 4 caracteres"
+                    value={regPassword}
+                    onChange={(e) => setRegPassword(e.target.value)}
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-xs font-semibold outline-none focus:border-[#f56d29] focus:ring-2 focus:ring-[#f56d29]/20 text-[#111]"
+                  />
+                </div>
+
+                <div className="sm:col-span-2 lg:col-span-4 mt-2 flex justify-end">
+                  <button
+                    type="submit"
+                    disabled={rankingLoading}
+                    className="w-full sm:w-auto bg-[#f56d29] hover:bg-[#e05819] text-white text-xs font-black uppercase tracking-wider px-8 py-3.5 rounded-xl transition-all shadow-md disabled:opacity-50 cursor-pointer"
+                  >
+                    {rankingLoading ? "Guardando Registro..." : "Crear Cuenta de Embajador"}
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         )}
       </motion.div>
@@ -399,8 +562,15 @@ export default function RankingPage() {
                       </div>
 
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5 sm:gap-2">
-                          <h3 className="font-extrabold text-xs sm:text-sm text-[#111] truncate">{client.nombre}</h3>
+                        <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                          <h3 className="font-extrabold text-xs sm:text-sm text-[#111] truncate">
+                            {client.nombre?.replace(/\s*\(@.*?\)/, "").trim() || "Cliente GAB"}
+                          </h3>
+                          {(client.username || client.nombre?.match(/@([a-zA-Z0-9_.-]+)/)?.[1]) && (
+                            <span className="text-[10px] text-gray-500 font-bold bg-gray-100 px-1.5 py-0.2 rounded shrink-0">
+                              @{client.username || client.nombre?.match(/@([a-zA-Z0-9_.-]+)/)?.[1]}
+                            </span>
+                          )}
                           {isMe && <span className="bg-[#f56d29] text-white text-[8px] font-black uppercase px-1.5 py-0.5 rounded-full shrink-0">Tú</span>}
                           {rank === 1 && <span className="bg-[#ffd700]/20 text-[#8c6731] text-[8px] font-black uppercase px-1.5 py-0.5 rounded-full shrink-0">Líder</span>}
                         </div>
@@ -453,8 +623,15 @@ export default function RankingPage() {
                       </div>
 
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <h4 className="font-bold text-sm text-[#111] truncate">{client.nombre}</h4>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h4 className="font-bold text-sm text-[#111] truncate">
+                            {client.nombre?.replace(/\s*\(@.*?\)/, "").trim() || "Usuario"}
+                          </h4>
+                          {(client.username || client.nombre?.match(/@([a-zA-Z0-9_.-]+)/)?.[1]) && (
+                            <span className="text-[10px] text-gray-500 font-bold bg-gray-100 px-1.5 py-0.2 rounded shrink-0">
+                              @{client.username || client.nombre?.match(/@([a-zA-Z0-9_.-]+)/)?.[1]}
+                            </span>
+                          )}
                           {isMe && <span className="bg-[#f56d29] text-white text-[8px] font-black uppercase px-2 py-0.5 rounded-full">Tú</span>}
                           {qualifies ? (
                             <span className="bg-emerald-100 text-emerald-700 text-[8px] font-black uppercase px-2 py-0.5 rounded-full">Clasificado (&gt; $20)</span>

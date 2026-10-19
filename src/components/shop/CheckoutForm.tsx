@@ -73,6 +73,16 @@ export function CheckoutForm() {
       return;
     }
 
+    if (deliveryType === "nacional" && (!deliveryInfo.city?.trim() || !deliveryInfo.agencyAddress?.trim())) {
+      setErrorMessage("Por favor completa los datos de envío nacional (Ciudad y Dirección/Agencia).");
+      return;
+    }
+
+    if (deliveryType === "delivery" && (!deliveryInfo.street?.trim() || !deliveryInfo.number?.trim())) {
+      setErrorMessage("Por favor completa la dirección de delivery en Caracas (Calle y Casa/Edificio).");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -114,6 +124,34 @@ export function CheckoutForm() {
         );
         setLoading(false);
         return;
+      }
+
+      // Guardar orden completa para notificación a WhatsApp
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.setItem(
+            "gab_last_order",
+            JSON.stringify({
+              orderRef: data.reference || "BNC-" + Math.floor(100000 + Math.random() * 900000),
+              customerName,
+              customerPhone: payerPhone || deliveryInfo.phone,
+              customerEmail,
+              deliveryType,
+              deliveryInfo,
+              items: items.map((i) => ({
+                name: i.name,
+                quantity: i.quantity,
+                price: i.quantity >= i.wholesaleMin ? i.wholesalePrice : i.price,
+              })),
+              totalUsd,
+              totalVes,
+              rateBcv: tasaBcv,
+              paymentRef: referenceNumber.trim(),
+            })
+          );
+        } catch {
+          // ignore
+        }
       }
 
       // Pago Aprobado:
