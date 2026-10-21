@@ -7,7 +7,7 @@ export type OrderWhatsAppDetails = {
   customerName: string;
   customerPhone?: string;
   customerEmail?: string;
-  deliveryType: "delivery" | "nacional" | "pickup";
+  deliveryType?: "delivery" | "nacional" | "pickup";
   deliveryInfo: {
     street?: string;
     number?: string;
@@ -31,73 +31,91 @@ export type OrderWhatsAppDetails = {
   rateBcv?: number;
   paymentMethod?: string;
   paymentRef?: string;
+  payerPhone?: string;
+  hasReceipt?: boolean;
 };
 
 /**
- * Genera el mensaje formateado y el enlace directo hacia WhatsApp
+ * Genera el mensaje formateado en plantilla ordenada y el enlace directo hacia WhatsApp
  */
 export function buildOrderWhatsAppUrl(details: OrderWhatsAppDetails): string {
   const {
     orderRef,
     customerName,
     customerPhone,
-    deliveryType,
+    customerEmail,
+    deliveryType = "nacional",
     deliveryInfo,
     items,
     totalUsd,
     totalVes,
     rateBcv,
     paymentRef,
+    hasReceipt,
   } = details;
 
-  let deliverySection = "";
+  const receiverPhone = deliveryInfo.phone || customerPhone || "No especificado";
 
-  if (deliveryType === "nacional") {
-    deliverySection = `📦 *ENVÍO NACIONAL (A OTRO ESTADO)*
-📍 *Estado:* ${deliveryInfo.state || "No especificado"}
-🏙️ *Ciudad:* ${deliveryInfo.city || "No especificado"}
-🏢 *Empresa/Agencia:* ${deliveryInfo.agency || "MRW / Zoom / Tealca"}
-📍 *Dirección/Sede:* ${deliveryInfo.agencyAddress || "No especificado"}
-🪪 *Cédula/RIF:* ${deliveryInfo.idNumber || "No especificado"}
-👤 *Retira:* ${deliveryInfo.receiverName || customerName}
-📞 *Teléfono Destino:* ${deliveryInfo.phone || customerPhone || "No especificado"}`;
+  let deliverySection = "";
+  if (deliveryType === "nacional" || !deliveryType) {
+    deliverySection = [
+      `📦 *DATOS DE ENVÍO NACIONAL:*`,
+      `• *Estado:* ${deliveryInfo.state || "Trujillo"}`,
+      `• *Ciudad / Municipio:* ${deliveryInfo.city || "No especificado"}`,
+      `• *Agencia de Envío:* ${deliveryInfo.agency || "MRW / ZOOM (Cobro en Destino)"}`,
+      `• *Cédula / RIF (Quien retira):* ${deliveryInfo.idNumber || "No especificado"}`,
+      `• *Nombre de quien recibe:* ${deliveryInfo.receiverName || customerName}`,
+      `• *Dirección de Sede / Domicilio:* ${deliveryInfo.agencyAddress || "No especificado"}`,
+      `• *Teléfono Destino (WhatsApp):* ${receiverPhone}`,
+    ].join("\n");
   } else if (deliveryType === "delivery") {
-    deliverySection = `🛵 *DELIVERY LOCAL (CARACAS)*
-📍 *Calle/Av:* ${deliveryInfo.street || "No especificado"}
-🏠 *Edif/Casa:* ${deliveryInfo.number || "No especificado"}
-🧭 *Referencia:* ${deliveryInfo.reference || "Ninguna"}
-📞 *Teléfono:* ${deliveryInfo.phone || customerPhone || "No especificado"}`;
+    deliverySection = [
+      `🛵 *DATOS DE DELIVERY:*`,
+      `• *Calle / Av:* ${deliveryInfo.street || "No especificado"}`,
+      `• *Edif / Casa:* ${deliveryInfo.number || "No especificado"}`,
+      `• *Referencia:* ${deliveryInfo.reference || "Ninguna"}`,
+      `• *Teléfono:* ${receiverPhone}`,
+    ].join("\n");
   } else {
-    deliverySection = `🏬 *RETIRO EN TIENDA (CARACAS)*
-📍 Retiro presencial por el cliente en sede Caracas.`;
+    deliverySection = [
+      `🏬 *RETIRO EN TIENDA:*`,
+      `• Retiro presencial por el cliente`,
+    ].join("\n");
   }
 
-  const itemsList = items
-    .map(
-      (item) =>
-        `• ${item.quantity}x ${item.name} ($${(item.price * item.quantity).toFixed(2)})`
-    )
-    .join("\n");
+  const itemsList = items && items.length > 0
+    ? items
+        .map(
+          (item) =>
+            `• ${item.quantity}x ${item.name}${item.variant ? ` (${item.variant})` : ""} — $${(item.price * item.quantity).toFixed(2)} USD`
+        )
+        .join("\n")
+    : "• Sin productos";
 
   const lines = [
-    `🍟 *NUEVO PEDIDO · GAB CHIPS* 🍟`,
-    orderRef ? `🧾 *Referencia:* #${orderRef}` : `🧾 *Pedido Web*`,
+    `🍟 *ORDEN DE PEDIDO · GAB CHIPS* 🍟`,
+    orderRef ? `🧾 *Pedido:* #${orderRef}` : `🧾 *Pedido Web*`,
     `━━━━━━━━━━━━━━━━━━`,
-    `👤 *Cliente:* ${customerName}`,
-    customerPhone ? `📞 *Contacto:* ${customerPhone}` : null,
+    `👤 *DATOS DEL CLIENTE:*`,
+    `• *Nombre:* ${customerName}`,
+    customerEmail ? `• *Correo:* ${customerEmail}` : null,
+    customerPhone ? `• *Teléfono:* ${customerPhone}` : null,
     `━━━━━━━━━━━━━━━━━━`,
     deliverySection,
     `━━━━━━━━━━━━━━━━━━`,
-    `🛍️ *PRODUCTOS:*`,
-    itemsList || "• Sin productos",
+    `🛍️ *DETALLE DE PRODUCTOS:*`,
+    itemsList,
     `━━━━━━━━━━━━━━━━━━`,
     `💰 *TOTAL A PAGAR:*`,
     `💵 *$${totalUsd.toFixed(2)} USD*`,
     `🇻🇪 *Bs. ${totalVes.toLocaleString("es-VE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}*`,
     rateBcv ? `📊 *Tasa BCV:* Bs. ${rateBcv.toFixed(2)}` : null,
-    paymentRef ? `🏦 *Ref. Pago Móvil:* ${paymentRef}` : null,
     `━━━━━━━━━━━━━━━━━━`,
-    `_Hola GAB Chips, les comparto los datos de mi pedido y dirección para coordinar el despacho._`,
+    `🏦 *DATOS DEL PAGO (BNC):*`,
+    paymentRef ? `• *Ref. Bancaria:* #${paymentRef}` : null,
+    hasReceipt ? `• *Comprobante:* 📸 Adjunto captura a este chat` : `• *Comprobante:* Adjunto captura a continuación`,
+    `━━━━━━━━━━━━━━━━━━`,
+    `_Hola GAB Chips, les comparto los datos de mi pedido, envío nacional y comprobante para coordinar el despacho. ¡Muchas gracias!_`,
   ]
     .filter(Boolean)
     .join("\n");

@@ -73,11 +73,11 @@ export function CartDrawer() {
               {items.length === 0 ? (
                 <div className="flex h-full flex-col items-center justify-center text-center">
                   <div className="grid h-24 w-24 place-items-center rounded-full bg-white shadow-sm border border-[#e8e2d9] text-5xl mb-6">
-                    🥔
+                    ðŸ¥”
                   </div>
-                  <p className="font-black text-2xl text-[#111] uppercase">Está vacío</p>
+                  <p className="font-black text-2xl text-[#111] uppercase">EstÃ¡ vacÃ­o</p>
                   <p className="mt-2 text-sm text-[#666] font-medium max-w-[250px]">
-                    Añade nuestras deliciosas papas artesanales y prepárate para el mejor crunch.
+                    AÃ±ade nuestras deliciosas papas artesanales y prepÃ¡rate para el mejor crunch.
                   </p>
                   <button
                     type="button"
@@ -91,9 +91,9 @@ export function CartDrawer() {
                 <div>
                   {/* Banner de compra por docenas y precio mayorista */}
                   <div className="mb-4 rounded-xl bg-orange-50/80 border border-orange-200/80 p-3 flex items-center gap-2.5">
-                    <span className="text-xl">📦</span>
+                    <span className="text-xl">ðŸ“¦</span>
                     <p className="text-[11px] text-[#444] font-medium leading-tight">
-                      <strong className="text-[#f56d29] font-black">¡Pide por docenas!</strong> Disfruta de precio mayorista especial ($0.80 c/u) a partir de 12 unidades.
+                      <strong className="text-[#f56d29] font-black">Â¡Pide por docenas!</strong> Disfruta de precios mayoristas especiales a partir de 12 unidades.
                     </p>
                   </div>
 
@@ -134,10 +134,15 @@ export function CartDrawer() {
                                 <h3 className="text-sm font-black uppercase text-[#111] leading-tight truncate">
                                   {item.name}
                                 </h3>
+                                {item.variant && (
+                                  <span className="text-[10px] font-bold text-[#777] bg-[#f5f2eb] px-1.5 py-0.5 rounded-md inline-block w-fit mt-1">
+                                    {item.variant}
+                                  </span>
+                                )}
 
                                 {isWholesale ? (
                                   <p className="mt-1 text-[10px] font-bold text-[#4CAF50] flex items-center gap-1">
-                                    <Sparkles className="w-2.5 h-2.5" /> Ahorras ${(item.price - item.wholesalePrice).toFixed(2)} c/u ($0.80 c/u)
+                                    <Sparkles className="w-2.5 h-2.5" /> Ahorras ${(item.price - item.wholesalePrice).toFixed(2)} c/u (${item.wholesalePrice.toFixed(2)} c/u)
                                   </p>
                                 ) : (
                                   <div className="flex items-center gap-1.5 mt-1 flex-wrap">
@@ -165,7 +170,7 @@ export function CartDrawer() {
                               </button>
                             </div>
 
-                            {/* Acceso Rápido por Docenas */}
+                            {/* Acceso RÃ¡pido por Docenas */}
                             <div className="pt-2.5 border-t border-[#f0ede6] flex flex-wrap items-center justify-between gap-1.5">
                               <span className="text-[9px] font-black uppercase tracking-wider text-[#777] flex items-center gap-1">
                                 <Sparkles className="w-2.5 h-2.5 text-[#f56d29]" /> Docenas:

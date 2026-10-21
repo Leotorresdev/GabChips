@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Clock,
   Phone,
   MapPin,
   Smartphone,
@@ -11,14 +10,8 @@ import {
   PackageOpen,
 } from "lucide-react";
 
-const socialIcons = [
-  (props: any) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>,
-  (props: any) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>,
-  (props: any) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
-];
-
 const footerFeatures = [
-  { icon: Truck, title: "ENTREGA RÁPIDA", desc: "Fresco y directo a tu puerta." },
+  { icon: Truck, title: "ENTREGA RÁPIDA", desc: "Fresco y directo a tu encomienda nacional." },
   { icon: ShieldCheck, title: "PAGO SEGURO", desc: "Pagos seguros y sin problemas." },
   { icon: HeadphonesIcon, title: "SOPORTE EXPERTO", desc: "Estamos aquí para ayudarte." },
   { icon: PackageOpen, title: "GARANTÍA DE SABOR", desc: "¿No estás satisfecho? Lo solucionaremos." },
@@ -49,7 +42,7 @@ export function Footer() {
 
       {/* Main Footer */}
       <footer id="contacto" className="bg-[#1a1a1a] text-white/80">
-        <div className="mx-auto grid max-w-7xl gap-8 sm:gap-10 px-4 py-12 md:py-14 sm:grid-cols-2 md:grid-cols-4 md:px-8">
+        <div className="mx-auto grid max-w-7xl gap-8 sm:gap-10 px-4 py-12 md:py-14 sm:grid-cols-2 md:grid-cols-3 md:px-8">
           <div>
             <div className="flex items-center gap-3 mb-3">
               <div className="relative h-12 w-12 rounded-2xl overflow-hidden border border-white/20 shadow-md bg-[#e05819] shrink-0">
@@ -68,44 +61,19 @@ export function Footer() {
                 </span>
               </div>
             </div>
-            <p className="mt-4 text-sm max-w-xs text-[#aaa]">
-              Snacks 100% artesanales: papas, plátano, yuca y chicharrón. Venta por
-              docena.
+            <p className="mt-4 text-sm max-w-xs text-[#aaa] leading-relaxed">
+              Snacks 100% artesanales con la mejor calidad venezolana. Venta al detal y por docenas.
             </p>
-            <div className="mt-5 flex gap-3">
-              {socialIcons.map((Icon, i) => (
-                <a
-                  key={i}
-                  href="#"
-                  className="grid h-10 w-10 place-items-center rounded-full bg-[#333] hover:bg-[#f56d29] hover:text-[#111] transition-colors"
-                  aria-label="Red social"
-                >
-                  <Icon className="h-4 w-4" />
-                </a>
-              ))}
-            </div>
-          </div>
-
-          <div id="nosotros">
-            <h4 className="font-extrabold text-white">Horarios</h4>
-            <ul className="mt-4 space-y-2 text-sm text-[#aaa]">
-              <li className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-[#f56d29]" /> Lun–Vie: 11:00 – 22:00
-              </li>
-              <li className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-[#f56d29]" /> Sáb–Dom: 12:00 – 00:00
-              </li>
-            </ul>
           </div>
 
           <div>
             <h4 className="font-extrabold text-white">Contacto</h4>
             <ul className="mt-4 space-y-2 text-sm text-[#aaa]">
               <li className="flex items-center gap-2">
-                <Phone className="h-4 w-4 text-[#f56d29]" /> 0424-4493286
+                <Phone className="h-4 w-4 text-[#f56d29] shrink-0" /> 0424-4493286
               </li>
               <li className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-[#f56d29]" /> Caracas, Venezuela
+                <MapPin className="h-4 w-4 text-[#f56d29] shrink-0" /> Boconó, Estado Trujillo, Venezuela
               </li>
             </ul>
           </div>
@@ -113,7 +81,7 @@ export function Footer() {
           <div>
             <h4 className="font-extrabold text-white">Pagos aceptados</h4>
             <div className="mt-4 flex flex-wrap gap-2">
-              {["Pago Móvil", "Binance", "USDT", "Efectivo"].map((p) => (
+              {["Pago Móvil", "BNC", "Binance", "USDT", "Efectivo"].map((p) => (
                 <div
                   key={p}
                   className="flex items-center gap-1.5 rounded-lg bg-[#333] px-3 py-2 text-xs font-bold text-white"

@@ -1,107 +1,170 @@
 export type CategoryId = "papas" | "platano" | "especialidades" | "packs";
 
+export type ProductPresentation = {
+  id: string;
+  name: string;
+  weight: string;
+  price: number;
+  dozenPrice: number;
+  wholesalePrice: number;
+};
+
 export type Product = {
   id: string;
   name: string;
-  description: string;
+  description?: string;
   image: string;
   category: CategoryId;
   categoryLabel: string;
   price: number;
   wholesalePrice: number;
   wholesaleMin: number;
-  tags: string[];
+  tags?: string[];
   weight: string;
   badge?: string;
   oldPrice?: number;
+  retailOnly?: boolean;
+  presentations?: ProductPresentation[];
 };
-
-// Reutilizamos las imágenes existentes del catálogo hasta que el usuario suministre las fotos oficiales
-const IMG_1 = "https://lh3.googleusercontent.com/aida-public/AB6AXuCQ2fAWapGOKN6ETsPuuo1FKP_jInszVqthwm4Jy_-5WISS0IAv4C49dXLB7I7pQTC8K0dQ_4bBMlu2xude6ldSF2gjGlQYLCDVZPlkNcJBY5TFCA51hXXMCu50zNIsmvWgKSQz5rBU1zMEcWyvzNiKFGto9o-jcRot9kadiT5JvLuwjzuTk7z_w_3ewTKHy1Q8ILTnL0gbCwyACBb8Txs8hozZ0BnbtBdUkmtpCKPxua79WUe4wR70";
-const IMG_2 = "https://lh3.googleusercontent.com/aida-public/AB6AXuBZX_6r9C5iCf8YEuMC9mItQRDifETyoB0Rkbja0cFvFWhv_636jscUoE5f1RwtBLJX-u-DID8Rt0hwfoqb6g6DLg6R07PkPmVulvMPLL86DcIBJoaUsnqZaIMfL4ODDPKE9gvoJqSpqlsG3tPtt5gPW0ary81GY6jkyKhXhww-6L0gLa6Fj4IiBWH8VMJEUmdkpD6vjWSpdt5HxLywMoKIYOAIvy3mfhaa-uki3aKYqZS7m6-j9bTv";
-const IMG_3 = "https://lh3.googleusercontent.com/aida-public/AB6AXuARXkJ7NpZaLjR7Di640y5m0pZpxHiQf-UScnClyGORIc1PRwkc1KiysXrMEVd7-29G08oKnvMk6uRI53IK4CYw6sJw6AnCNq3jd35TZBLm-RxlzRqm1w1Fa6TZZRfUMLJWs935zMM-lu4ZuSVuKf_iSihKl3mijyH65Ih-DUHccO6K_ew-lSF2t8MnW6PIlhS93m52TZgUTe6d_jp8cx_xllxRGwkfK2INqYkIVkokErcm5bF49Gwa";
 
 export const products: Product[] = [
   {
-    id: "papas-originales",
-    name: "Papitas Fritas Originales (Solo Sal)",
-    description: "Nuestras papas insignia naturales, sin aditivos, crujientes y con el toque justo de sal marina.",
-    image: IMG_1,
+    id: "papas-naturales",
+    name: "Papas Naturales",
+    description: "",
+    image: "/images/papas-naturales.jpg",
     category: "papas",
-    categoryLabel: "RECETA ORIGINAL",
+    categoryLabel: "RECETA ARTESANAL",
     price: 1.00,
-    wholesalePrice: 0.80,
+    wholesalePrice: 9 / 12,
     wholesaleMin: 12,
     tags: ["100% Natural", "Solo Sal"],
-    weight: "50g",
-    badge: "Más Vendido",
+    weight: "60g",
+    badge: "100% Artesanal",
+    presentations: [
+      {
+        id: "60g",
+        name: "60 gramos",
+        weight: "60g",
+        price: 1.00,
+        dozenPrice: 9.00,
+        wholesalePrice: 9 / 12, // $0.75 c/u al mayor
+      },
+      {
+        id: "100g",
+        name: "100 gramos",
+        weight: "100g",
+        price: 1.00,
+        dozenPrice: 13.00,
+        wholesalePrice: 13 / 12, // ~$1.08 c/u al mayor ($13 docena)
+      },
+    ],
   },
   {
     id: "papas-queso",
-    name: "Papitas con Sabor a Queso",
-    description: "Papas crujientes doradas al punto exacto con un irresistible e intenso sabor a queso.",
-    image: IMG_2,
+    name: "Papas Sabor a Queso",
+    description: "",
+    image: "/images/papas-queso.jpg",
     category: "papas",
-    categoryLabel: "SABOR INTENSO",
+    categoryLabel: "SABOR A QUESO",
     price: 1.00,
-    wholesalePrice: 0.80,
+    wholesalePrice: 9 / 12,
     wholesaleMin: 12,
     tags: ["Sabor Queso", "Crocante"],
-    weight: "50g",
+    weight: "60g",
     badge: "Favorito",
+    presentations: [
+      {
+        id: "60g",
+        name: "60 gramos",
+        weight: "60g",
+        price: 1.00,
+        dozenPrice: 9.00,
+        wholesalePrice: 9 / 12, // $0.75 c/u al mayor
+      },
+      {
+        id: "100g",
+        name: "100 gramos",
+        weight: "100g",
+        price: 1.00,
+        dozenPrice: 13.00,
+        wholesalePrice: 13 / 12, // ~$1.08 c/u al mayor ($13 docena)
+      },
+    ],
   },
   {
     id: "papas-cebolla-perejil",
-    name: "Papas con Sabor a Cebolla y Perejil",
-    description: "Clásica y deliciosa combinación aromática de cebolla dulce y notas frescas de perejil.",
-    image: IMG_3,
+    name: "Papas Cebolla y Perejil",
+    description: "",
+    image: "/images/papas-cebolla-perejil.jpg",
     category: "papas",
-    categoryLabel: "HIERBAS & ESPECIAS",
+    categoryLabel: "CEBOLLA & PEREJIL",
     price: 1.00,
-    wholesalePrice: 0.80,
+    wholesalePrice: 9 / 12,
     wholesaleMin: 12,
     tags: ["Cebolla & Perejil", "Gourmet"],
-    weight: "50g",
+    weight: "60g",
+    presentations: [
+      {
+        id: "60g",
+        name: "60 gramos",
+        weight: "60g",
+        price: 1.00,
+        dozenPrice: 9.00,
+        wholesalePrice: 9 / 12, // $0.75 c/u al mayor
+      },
+      {
+        id: "100g",
+        name: "100 gramos",
+        weight: "100g",
+        price: 1.00,
+        dozenPrice: 13.00,
+        wholesalePrice: 13 / 12, // ~$1.08 c/u al mayor ($13 docena)
+      },
+    ],
   },
   {
-    id: "platano-original",
-    name: "El Plátano Original",
-    description: "Plátano verde seleccionado en finas hojuelas crujientes sazonadas con sal marina.",
-    image: IMG_1,
+    id: "tostones-naturales",
+    name: "Tostones Naturales",
+    description: "",
+    image: "/images/tostones-naturales.jpg",
     category: "platano",
-    categoryLabel: "TRADICIONAL",
+    categoryLabel: "PLÁTANO ARTESANAL",
     price: 1.00,
-    wholesalePrice: 0.80,
+    wholesalePrice: 9 / 12, // $0.75 c/u al mayor ($9 docena)
     wholesaleMin: 12,
-    tags: ["Plátano Verde", "Artesanal"],
-    weight: "50g",
+    tags: ["Plátano Verde", "Solo Sal"],
+    weight: "80g",
+    badge: "Crujiente",
   },
   {
-    id: "platano-madurito",
-    name: "El Plátano Madurito",
-    description: "El inconfundible dulzor natural del plátano maduro venezolano, tostado y ultracrujiente.",
-    image: IMG_2,
-    category: "platano",
-    categoryLabel: "DULCE & CROCANTE",
-    price: 1.00,
-    wholesalePrice: 0.80,
-    wholesaleMin: 12,
-    tags: ["Plátano Maduro", "Dulce Natural"],
-    weight: "50g",
-    badge: "Especial",
-  },
-  {
-    id: "chicharron",
-    name: "Chicharrón",
-    description: "Chicharrón crujiente y aireado preparado con la receta artesanal tradicional de la casa.",
-    image: IMG_3,
+    id: "chicharron-natural",
+    name: "Chicharrón Natural",
+    description: "",
+    image: "/images/chicharron-natural.jpg",
     category: "especialidades",
-    categoryLabel: "100% CRUJIENTE",
-    price: 1.00,
-    wholesalePrice: 0.80,
+    categoryLabel: "CHICHARRÓN ARTESANAL",
+    price: 2.00,
+    wholesalePrice: 13 / 12, // ~$1.08 c/u al mayor ($13 docena)
     wholesaleMin: 12,
-    tags: ["Puro Sabor", "Tradicional"],
+    tags: ["100% Crujiente", "Artesanal"],
     weight: "50g",
+    badge: "Súper Crunch",
+  },
+  {
+    id: "harina-chicharron",
+    name: "Harina de Chicharrón",
+    description: "",
+    image: "/images/harina-chicharron.png",
+    category: "especialidades",
+    categoryLabel: "ESPECIALIDAD",
+    price: 2.00,
+    wholesalePrice: 2.00,
+    wholesaleMin: 999999,
+    tags: ["250g", "100% Puro", "Keto"],
+    weight: "250g",
+    badge: "Solo Detal",
+    retailOnly: true,
   },
 ];
 

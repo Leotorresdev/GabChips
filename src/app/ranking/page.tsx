@@ -152,6 +152,7 @@ export default function RankingPage() {
   // Priorizamos el total de la base de datos real, o el del store local si acaba de registrarse
   const myTotal = myRecord ? Number(myRecord.total_comprado || 0) : totalComprado;
   const isOver20 = myTotal > 20;
+  const myPoints = myTotal >= 20 ? Math.round(myTotal * 0.15 * 10) / 10 : 0;
 
   // Posición del usuario en el ranking (si está clasificado)
   const myRankIndex = userEmail 
@@ -181,25 +182,33 @@ export default function RankingPage() {
             <h1 className="text-3xl md:text-5xl font-black text-white leading-[1.15] mb-4 drop-shadow-sm tracking-tight">
               Ranking Nacional de<br/>Embajadores GAB
             </h1>
-            <p className="text-white/95 text-sm md:text-base font-medium leading-relaxed max-w-lg">
+            <p className="text-white/95 text-sm md:text-base font-medium leading-relaxed max-w-lg mb-4">
               Acumula tus compras y asciende en la tabla oficial. Compras mayores a <strong className="font-bold text-white">$20.00 USD</strong> clasifican automáticamente en el Ranking Nacional.
             </p>
+            
+            {/* Aviso Destacado de Premios Top 3 */}
+            <div className="inline-flex flex-wrap items-center gap-2 bg-black/25 backdrop-blur-md border border-white/25 px-4 py-2.5 rounded-2xl text-white text-xs sm:text-sm font-bold shadow-md">
+              <Trophy className="w-5 h-5 text-yellow-300 shrink-0" />
+              <span>
+                ¡Los <strong className="text-yellow-300 font-black">primeros 3 puestos</strong> serán ganadores de premios por <span className="underline decoration-yellow-400 font-black">1er, 2do y 3er lugar</span>! 🏆
+              </span>
+            </div>
           </div>
           
           <div className="shrink-0 w-full lg:w-auto">
             <div className="bg-white/15 backdrop-blur-md border border-white/25 rounded-2xl p-5 md:p-6 flex items-center gap-4 shadow-lg shadow-black/5">
               <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center shrink-0 border border-white/30">
-                <Trophy className="w-6 h-6 text-white" />
+                <Trophy className="w-6 h-6 text-yellow-300" />
               </div>
               <div className="flex flex-col text-white">
-                <span className="text-[11px] font-black uppercase tracking-widest text-white/80 mb-0.5">
-                  Tabla de Posiciones
+                <span className="text-[11px] font-black uppercase tracking-widest text-yellow-300 mb-0.5">
+                  Premios Top 3
                 </span>
                 <span className="font-extrabold text-base md:text-lg leading-tight text-white drop-shadow-sm">
-                  Clasificación Oficial
+                  1°, 2° y 3° Lugar
                 </span>
                 <span className="text-xs font-semibold text-white/90">
-                  Actualización en Tiempo Real
+                  Premios a los Ganadores
                 </span>
               </div>
             </div>
@@ -229,7 +238,7 @@ export default function RankingPage() {
                     ¡Felicidades, {userName}!
                   </h2>
                   <p className="text-xs md:text-sm text-[#555] font-medium mt-0.5">
-                    Tus compras acumuladas superan los $20.00 USD. Actualmente tienes <strong className="text-emerald-600 font-bold">${myTotal.toFixed(2)} USD</strong> ({Math.round(myTotal * 10)} pts) y estás en la <strong className="text-[#111]">Posición #{myRank || 1}</strong> del Ranking.
+                    Tus compras acumuladas superan los $20.00 USD. Actualmente tienes <strong className="text-emerald-600 font-bold">${myTotal.toFixed(2)} USD</strong> ({myPoints % 1 === 0 ? myPoints : myPoints.toFixed(1)} pts) y estás en la <strong className="text-[#111]">Posición #{myRank || 1}</strong> del Ranking.
                   </p>
                 </div>
               </div>
@@ -454,7 +463,7 @@ export default function RankingPage() {
               <div>
                 <h2 className="text-xl font-extrabold text-[#111]">Tabla de Posiciones</h2>
                 <p className="text-xs text-[#666]">
-                  Datos en vivo de Supabase • {activeTab === "clasificados" ? "Solo compras > $20.00 USD" : "Todos los registros con descuento"}
+                  {activeTab === "clasificados" ? "Clasificación Oficial • Solo compras a partir de $20.00 USD (15% en puntos)" : "Todos los registros con descuento"}
                 </p>
               </div>
             </div>
@@ -529,7 +538,8 @@ export default function RankingPage() {
                 clasificados.map((client, idx) => {
                   const rank = idx + 1;
                   const total = Number(client.total_comprado || 0);
-                  const pts = Math.round(total * 10);
+                  const ptsRaw = total >= 20 ? total * 0.15 : 0;
+                  const pts = Math.round(ptsRaw * 10) / 10;
                   const isMe = userEmail && client.correo?.toLowerCase() === userEmail.toLowerCase();
 
                   return (
@@ -581,7 +591,7 @@ export default function RankingPage() {
 
                       <div className="flex items-center gap-2 sm:gap-5 text-right shrink-0">
                         <div className="flex flex-col items-end">
-                          <span className="font-extrabold text-xs sm:text-sm text-[#111]">{pts.toLocaleString()} <span className="text-[9px] text-[#888] font-bold">pts</span></span>
+                          <span className="font-extrabold text-xs sm:text-sm text-[#111]">{pts % 1 === 0 ? pts : pts.toFixed(1)} <span className="text-[9px] text-[#888] font-bold">pts</span></span>
                           <span className="text-[8px] sm:text-[9px] text-[#888] uppercase tracking-wider">Puntos</span>
                         </div>
                         <div className="flex flex-col items-end w-14 sm:w-20">
@@ -764,7 +774,11 @@ export default function RankingPage() {
               </div>
               <div className="flex items-start gap-2.5 bg-[#fdfbf7] p-3 rounded-xl border border-[#e8e4d8]">
                 <span className="font-black text-[#f56d29] text-xs shrink-0">3.</span>
-                <span className="font-medium">Cada $1 USD sumado genera 10 puntos para ascender de posición.</span>
+                <span className="font-medium">A partir de $20.00 USD en compras, acumulas el 15% en puntos (Ej: $20 = 3 puntos).</span>
+              </div>
+              <div className="flex items-start gap-2.5 bg-orange-50/90 p-3 rounded-xl border border-orange-200">
+                <span className="font-black text-[#f56d29] text-xs shrink-0">4.</span>
+                <span className="font-bold text-[#111]">¡Los primeros 3 puestos serán ganadores de premios por 1er, 2do y 3er lugar!</span>
               </div>
             </div>
 
@@ -779,34 +793,6 @@ export default function RankingPage() {
 
         </div>
       </div>
-
-      {/* Stats inferiores conectadas a Supabase */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className="grid grid-cols-1 md:grid-cols-3 gap-6"
-      >
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-[#e8e4d8] flex flex-col">
-          <span className="text-[10px] font-bold text-[#888] uppercase tracking-widest mb-1">TOTAL REGISTRADOS (20% OFF)</span>
-          <span className="text-3xl font-extrabold text-[#111] mb-2">{clientes.length}</span>
-          <span className="text-[10px] font-bold text-[#f56d29] flex items-center gap-1">
-            <TrendingUp className="w-3 h-3" /> Registros activos en Supabase
-          </span>
-        </div>
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-[#e8e4d8] flex flex-col">
-          <span className="text-[10px] font-bold text-[#888] uppercase tracking-widest mb-1">CLASIFICADOS EN RANKING (&gt; $20)</span>
-          <span className="text-3xl font-extrabold text-[#111] mb-2">{clasificados.length}</span>
-          <span className="text-[10px] font-bold text-emerald-600">Embajadores oficiales clasificados</span>
-        </div>
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-[#e8e4d8] flex flex-col">
-          <span className="text-[10px] font-bold text-[#888] uppercase tracking-widest mb-1">VOLUMEN TOTAL ACUMULADO</span>
-          <span className="text-3xl font-extrabold text-[#111] mb-2">
-            ${clientes.reduce((acc, c) => acc + Number(c.total_comprado || 0), 0).toFixed(2)}
-          </span>
-          <span className="text-[10px] font-bold text-[#f56d29]">Compras registradas en tiempo real</span>
-        </div>
-      </motion.div>
 
     </div>
   );

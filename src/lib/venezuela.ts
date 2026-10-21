@@ -27,8 +27,5 @@ export const ESTADOS_VENEZUELA = [
 
 export const AGENCIAS_ENCOMIENDA = [
   "MRW (Cobro a Destino)",
-  "Zoom (Cobro a Destino)",
-  "Tealca (Cobro a Destino)",
-  "Domesa (Cobro a Destino)",
-  "Entrega a Domicilio Particular",
+  "ZOOM (Cobro a Destino)",
 ];

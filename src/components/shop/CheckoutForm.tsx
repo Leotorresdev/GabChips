@@ -10,11 +10,16 @@ import {
   Check,
   ArrowRight,
   Building2,
+  Upload,
+  X,
+  CheckCircle2,
+  MessageCircle,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/store/cart";
 import { useUser } from "@/store/user";
 import { useBcv } from "@/hooks/useBcv";
+import { buildOrderWhatsAppUrl } from "@/lib/whatsapp";
 
 // Datos oficiales BNC de la empresa GAB Chips
 const DATOS_EMPRESA = [
@@ -42,6 +47,29 @@ export function CheckoutForm() {
   // Campos de verificación de Pago
   const [referenceNumber, setReferenceNumber] = useState("");
   const [payerPhone, setPayerPhone] = useState("");
+  const [receiptFile, setReceiptFile] = useState<File | null>(null);
+  const [receiptPreview, setReceiptPreview] = useState<string | null>(null);
+
+  const handleReceiptChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 8 * 1024 * 1024) {
+        setErrorMessage("La imagen es muy pesada. Por favor sube una captura menor a 8MB.");
+        return;
+      }
+      setReceiptFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setReceiptPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveReceipt = () => {
+    setReceiptFile(null);
+    setReceiptPreview(null);
+  };
 
   // Cálculo de montos con tasa BCV en vivo
   const baseTotal = subtotal();
@@ -73,13 +101,8 @@ export function CheckoutForm() {
       return;
     }
 
-    if (deliveryType === "nacional" && (!deliveryInfo.city?.trim() || !deliveryInfo.agencyAddress?.trim())) {
+    if (!deliveryInfo.city?.trim() || !deliveryInfo.agencyAddress?.trim()) {
       setErrorMessage("Por favor completa los datos de envío nacional (Ciudad y Dirección/Agencia).");
-      return;
-    }
-
-    if (deliveryType === "delivery" && (!deliveryInfo.street?.trim() || !deliveryInfo.number?.trim())) {
-      setErrorMessage("Por favor completa la dirección de delivery en Caracas (Calle y Casa/Edificio).");
       return;
     }
 
@@ -106,6 +129,7 @@ export function CheckoutForm() {
           paymentData: {
             reference: referenceNumber.trim(),
             phone: payerPhone.trim(),
+            hasReceipt: !!receiptPreview,
           },
           items: items.map((i) => ({
             id: i.id,
@@ -126,46 +150,46 @@ export function CheckoutForm() {
         return;
       }
 
-      // Guardar orden completa para notificación a WhatsApp
+      const orderPayload = {
+        orderRef: data.reference || "BNC-" + Math.floor(100000 + Math.random() * 900000),
+        customerName,
+        customerPhone: deliveryInfo.phone,
+        customerEmail,
+        deliveryType,
+        deliveryInfo,
+        items: items.map((i) => ({
+          name: i.name,
+          variant: i.variant,
+          quantity: i.quantity,
+          price: i.quantity >= i.wholesaleMin ? i.wholesalePrice : i.price,
+        })),
+        totalUsd,
+        totalVes,
+        rateBcv: tasaBcv,
+        paymentRef: referenceNumber.trim(),
+        hasReceipt: !!receiptPreview,
+      };
+
+      // Guardar orden completa para respaldo en localStorage
       if (typeof window !== "undefined") {
         try {
-          localStorage.setItem(
-            "gab_last_order",
-            JSON.stringify({
-              orderRef: data.reference || "BNC-" + Math.floor(100000 + Math.random() * 900000),
-              customerName,
-              customerPhone: payerPhone || deliveryInfo.phone,
-              customerEmail,
-              deliveryType,
-              deliveryInfo,
-              items: items.map((i) => ({
-                name: i.name,
-                quantity: i.quantity,
-                price: i.quantity >= i.wholesaleMin ? i.wholesalePrice : i.price,
-              })),
-              totalUsd,
-              totalVes,
-              rateBcv: tasaBcv,
-              paymentRef: referenceNumber.trim(),
-            })
-          );
+          localStorage.setItem("gab_last_order", JSON.stringify(orderPayload));
         } catch {
           // ignore
         }
       }
 
+      // Generar URL con la plantilla ordenada para WhatsApp (0424-4493286)
+      const whatsappUrl = buildOrderWhatsAppUrl(orderPayload);
+
       // Pago Aprobado:
       login(customerName, customerEmail, totalUsd);
       clear();
 
-      const queryParams = new URLSearchParams({
-        ref: data.reference || "BNC-SUCCESS",
-        amount: totalUsd.toFixed(2),
-        ves: totalVes.toFixed(2),
-        method: "p2p",
-      });
-
-      router.push(`/success?${queryParams.toString()}`);
+      // Enviar directamente a WhatsApp con todos los datos ordenados en plantilla
+      if (typeof window !== "undefined") {
+        window.location.href = whatsappUrl;
+      }
     } catch (err) {
       console.error("Error al procesar el pago:", err);
       setErrorMessage("Ocurrió un problema de comunicación al verificar tu pago. Por favor reintenta.");
@@ -302,7 +326,7 @@ export function CheckoutForm() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-1">
+          <div className="grid grid-cols-1 gap-4 mt-1">
             <div>
               <label className="block text-[10px] font-bold uppercase tracking-widest text-[#888] mb-1.5">
                 Número de Referencia Bancaria
@@ -323,22 +347,62 @@ export function CheckoutForm() {
               </span>
             </div>
 
-            <div>
-              <label className="block text-[10px] font-bold uppercase tracking-widest text-[#888] mb-1.5">
-                Teléfono desde el que pagaste (opcional)
+            {/* Subir Captura del Comprobante de Pago */}
+            <div className="mt-1">
+              <label className="block text-[10px] font-bold uppercase tracking-widest text-[#888] mb-1.5 flex items-center justify-between">
+                <span>Comprobante de Pago (Captura de Pantalla / Foto)</span>
+                <span className="text-[#f56d29] text-[9px] font-bold">Screenshot del banco</span>
               </label>
-              <input
-                type="tel"
-                placeholder="04121234567"
-                value={payerPhone}
-                onChange={(e) =>
-                  setPayerPhone(e.target.value.replace(/\D/g, "").slice(0, 11))
-                }
-                className="w-full rounded-xl border border-[#e8e2d9] bg-white px-4 py-3.5 text-sm font-bold text-[#111] outline-none focus:border-[#f56d29] focus:ring-4 focus:ring-[#f56d29]/10"
-              />
-              <span className="text-[10px] text-[#888] font-medium mt-1 block">
-                Para agilizar la verificación en cuenta BNC.
-              </span>
+
+              {!receiptPreview ? (
+                <label className="flex flex-col items-center justify-center w-full min-h-[110px] border-2 border-dashed border-[#e8e2d9] hover:border-[#f56d29] rounded-2xl bg-[#faf8f4] hover:bg-orange-50/40 cursor-pointer transition-all group p-4 text-center">
+                  <div className="w-10 h-10 rounded-full bg-white shadow-2xs flex items-center justify-center text-[#888] group-hover:text-[#f56d29] mb-2 transition-colors border border-[#e8e2d9]">
+                    <Upload className="w-5 h-5" />
+                  </div>
+                  <span className="text-xs font-black text-[#111]">
+                    Toca aquí para subir el capture del comprobante
+                  </span>
+                  <span className="text-[10px] text-[#888] font-medium mt-0.5">
+                    Imagen o captura de tu Pago Móvil / Transferencia (JPG o PNG)
+                  </span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleReceiptChange}
+                    className="hidden"
+                  />
+                </label>
+              ) : (
+                <div className="relative flex items-center gap-3 p-3 rounded-2xl bg-emerald-50/80 border border-emerald-200">
+                  <div className="w-14 h-14 rounded-xl overflow-hidden bg-white border border-emerald-300 shrink-0">
+                    <img
+                      src={receiptPreview}
+                      alt="Capture de pago"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5 text-emerald-800 text-xs font-black">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span className="truncate">Captura cargada con éxito</span>
+                    </div>
+                    <p className="text-[11px] text-emerald-700 truncate font-medium mt-0.5">
+                      {receiptFile?.name || "comprobante-pago.jpg"}
+                    </p>
+                    <span className="text-[9px] text-emerald-600 font-bold block mt-0.5">
+                      Lista para verificar tu orden
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleRemoveReceipt}
+                    className="p-1.5 rounded-lg text-emerald-700 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                    title="Quitar captura"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -370,12 +434,12 @@ export function CheckoutForm() {
           {loading ? (
             <>
               <Loader2 className="w-5 h-5 animate-spin" />
-              <span>Verificando tu pago en BNC...</span>
+              <span>Registrando orden y abriendo WhatsApp...</span>
             </>
           ) : (
             <>
-              <ShieldCheck className="w-5 h-5" />
-              <span>Verificar Pago y Confirmar Orden</span>
+              <MessageCircle className="w-5 h-5" />
+              <span>Confirmar y Enviar Pedido a WhatsApp</span>
               <ArrowRight className="w-4 h-4" />
             </>
           )}

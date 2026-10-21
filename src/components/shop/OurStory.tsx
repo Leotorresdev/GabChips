@@ -57,7 +57,7 @@ export function OurStory() {
           <div className="grid grid-cols-3 gap-3 sm:gap-6 pt-2">
             <div>
               <span className="block text-xl sm:text-2xl font-extrabold text-[#111] mb-1">100%</span>
-              <span className="text-[9px] sm:text-[10px] text-[#888] font-semibold leading-tight block">Aceite Virgen Extra</span>
+              <span className="text-[9px] sm:text-[10px] text-[#888] font-semibold leading-tight block">Manteca de cerdo</span>
             </div>
             <div>
               <span className="block text-xl sm:text-2xl font-extrabold text-[#111] mb-1">1.8mm</span>

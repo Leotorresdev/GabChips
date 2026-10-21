@@ -94,7 +94,7 @@ export function SuccessView() {
               <span>Notificar Dirección y Pedido al WhatsApp</span>
             </a>
             <p className="text-[11px] text-[#777] font-medium mt-2">
-              Haz clic para abrir WhatsApp con todos los datos y la dirección de entrega ya listos.
+              Haz clic para abrir WhatsApp con todos tus datos y dirección listos. Recuerda adjuntar la captura de tu comprobante en el chat.
             </p>
           </motion.div>
         )}

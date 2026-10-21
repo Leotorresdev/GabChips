@@ -15,12 +15,18 @@ export function ProductGrid() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#111] mb-6 sm:mb-10"
+          className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#111] mb-6 sm:mb-10 text-center sm:text-left"
         >
           Nuestra Colección
         </motion.h2>
 
-        <div className="grid w-full grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3">
+        <div
+          className={`grid w-full gap-3 sm:gap-6 ${
+            products.length === 1
+              ? "grid-cols-1 max-w-sm sm:max-w-md mx-auto"
+              : "grid-cols-2 lg:grid-cols-3"
+          }`}
+        >
           {products.map((p, i) => (
             <ProductCard key={p.id} product={p} index={i} />
           ))}

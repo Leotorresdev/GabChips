@@ -18,13 +18,13 @@ export type CartItem = {
 export type DeliveryType = "delivery" | "nacional" | "pickup";
 
 export type DeliveryInfo = {
-  // Local (Caracas)
+  // Local
   street: string;
   number: string;
   reference: string;
   phone: string;
 
-  // Envíos Nacionales (Otros Estados de Venezuela)
+  // Envíos Nacionales (Todos los Estados de Venezuela)
   state: string;
   city: string;
   agency: string;
@@ -57,13 +57,13 @@ export const useCart = create<CartState>()(
     (set, get) => ({
       items: [],
       isOpen: false,
-      deliveryType: "delivery",
+      deliveryType: "nacional",
       deliveryInfo: {
         street: "",
         number: "",
         reference: "",
         phone: "",
-        state: "Carabobo",
+        state: "Trujillo",
         city: "",
         agency: "MRW",
         agencyAddress: "",

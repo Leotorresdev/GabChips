@@ -49,17 +49,6 @@ export default function RankingLayout({ children }: { children: React.ReactNode 
             </Link>
           </div>
 
-          {/* Active Season */}
-          <div className="px-6 mb-8">
-            <div className="flex items-center justify-between bg-[#f5f3ec] rounded-full px-4 py-2 border border-[#e8e4d8]">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-[#f56d29] animate-pulse"></div>
-                <span className="text-[10px] font-bold text-[#555] uppercase tracking-wider">Temporada Activa</span>
-              </div>
-              <span className="text-xs font-black text-[#111]">2025</span>
-            </div>
-          </div>
-
           {/* Navigation */}
           <nav className="px-4 flex flex-col gap-1">
             {navItems.map((item) => {
@@ -85,30 +74,6 @@ export default function RankingLayout({ children }: { children: React.ReactNode 
 
         {/* User Progress & Logout */}
         <div className="p-6">
-          <div className="bg-white border border-[#e8e4d8] rounded-2xl p-4 mb-4 shadow-sm">
-            <div className="flex justify-between items-end mb-2">
-              <span className="text-[10px] font-bold text-[#f56d29] uppercase tracking-widest">
-                {hasPurchasedOver20 ? "Clasificado" : isLoggedIn ? "20% OFF Activo" : "Visitante"}
-              </span>
-              <span className="text-sm font-extrabold text-[#111]">
-                ${totalComprado.toFixed(2)} USD
-              </span>
-            </div>
-            <div className="w-full bg-[#f5f3ec] h-2 rounded-full mb-2 overflow-hidden border border-[#e8e4d8]">
-              <div 
-                className="bg-[#f56d29] h-full rounded-full transition-all duration-500" 
-                style={{ width: `${Math.min(100, Math.max(10, (totalComprado / 20) * 100))}%` }}
-              ></div>
-            </div>
-            <span className="text-[10px] text-[#888] font-bold block">
-              {hasPurchasedOver20 
-                ? "¡Clasificado Oficialmente en el Top!" 
-                : isLoggedIn 
-                  ? `Faltan $${Math.max(0, 20.01 - totalComprado).toFixed(2)} para clasificar (> $20)`
-                  : "Inicia sesión para participar"}
-            </span>
-          </div>
-          
           {isLoggedIn ? (
             <button 
               onClick={handleLogout}
