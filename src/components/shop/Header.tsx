@@ -200,7 +200,7 @@ export function Header() {
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
               </div>
               <span className="text-[10px] md:text-xs uppercase tracking-widest whitespace-nowrap">
-                Inicia sesión <span className="hidden sm:inline">por 20% OFF</span>
+                Inicia sesión <span className="hidden sm:inline">por 20% de Descuento</span>
               </span>
             </button>
           )}
@@ -282,7 +282,7 @@ export function Header() {
                     onClick={() => { setMenuOpen(false); setShowLogin(true); }}
                     className="w-full text-center rounded-xl px-4 py-3 font-black text-xs uppercase tracking-wider bg-[#25D366] text-white hover:bg-[#1ebd5a] transition-colors shadow-md"
                   >
-                    Activar 20% OFF / Iniciar Sesión
+                    Activar 20% de Descuento / Iniciar Sesión
                   </button>
                 )}
               </div>
@@ -343,7 +343,7 @@ export function Header() {
                       : "text-gray-500 hover:text-black"
                   }`}
                 >
-                  Nuevo (20% OFF)
+                  Nuevo (20% Dcto)
                 </button>
               </div>
 
@@ -404,7 +404,7 @@ export function Header() {
                 <>
                   <h3 className="text-xl font-black text-center mb-1">Nuevo Registro</h3>
                   <p className="text-xs text-gray-500 text-center mb-5">
-                    Activa tu <strong>20% OFF</strong> en toda la tienda y clasifica en el Ranking Oficial del Programa de Embajadores.
+                    Activa tu <strong>20% de Descuento</strong> en toda la tienda y clasifica en el Ranking Oficial del Programa de Embajadores.
                   </p>
                   
                   <form onSubmit={handleRegister} className="flex flex-col gap-3">
@@ -482,7 +482,7 @@ export function Header() {
                       disabled={loadingAuth}
                       className="w-full bg-[#f56d29] hover:bg-[#e05819] text-white font-black uppercase tracking-wider py-3.5 rounded-xl transition-all disabled:opacity-50 shadow-md text-xs mt-1 cursor-pointer"
                     >
-                      {loadingAuth ? "Registrando..." : "Activar 20% OFF y Guardar"}
+                      {loadingAuth ? "Registrando..." : "Activar 20% de Descuento y Guardar"}
                     </button>
                     {authMsg && <p className="text-xs text-center font-bold text-red-500 mt-1">{authMsg}</p>}
                   </form>

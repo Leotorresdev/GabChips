@@ -25,7 +25,7 @@ export default function CheckoutPage() {
           Finaliza tu <span className="text-[#f56d29]">pedido</span>
         </motion.h1>
         <p className="mt-4 text-sm font-medium text-[#555]">
-          Estás a un paso del mejor crunch artesanal de tu vida.
+          Estás a un paso del sabor más crujiente y artesanal de tu vida.
         </p>
 
         <div className="mt-12 grid gap-10 lg:grid-cols-2 items-start">

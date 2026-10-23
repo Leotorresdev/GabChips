@@ -202,7 +202,7 @@ export default function RankingPage() {
               </div>
               <div className="flex flex-col text-white">
                 <span className="text-[11px] font-black uppercase tracking-widest text-yellow-300 mb-0.5">
-                  Premios Top 3
+                  Los 3 Primeros Puestos
                 </span>
                 <span className="font-extrabold text-base md:text-lg leading-tight text-white drop-shadow-sm">
                   1°, 2° y 3° Lugar
@@ -238,7 +238,7 @@ export default function RankingPage() {
                     ¡Felicidades, {userName}!
                   </h2>
                   <p className="text-xs md:text-sm text-[#555] font-medium mt-0.5">
-                    Tus compras acumuladas superan los $20.00 USD. Actualmente tienes <strong className="text-emerald-600 font-bold">${myTotal.toFixed(2)} USD</strong> ({myPoints % 1 === 0 ? myPoints : myPoints.toFixed(1)} pts) y estás en la <strong className="text-[#111]">Posición #{myRank || 1}</strong> del Ranking.
+                    Tus compras acumuladas superan los $20.00 USD. Actualmente tienes <strong className="text-emerald-600 font-bold">${myTotal.toFixed(2)} USD</strong> ({myPoints % 1 === 0 ? myPoints : myPoints.toFixed(1)} puntos) y estás en la <strong className="text-[#111]">Posición #{myRank || 1}</strong> del Ranking.
                   </p>
                 </div>
               </div>
@@ -259,7 +259,7 @@ export default function RankingPage() {
                 </div>
                 <div>
                   <div className="inline-flex items-center gap-1.5 bg-[#f56d29]/15 text-[#f56d29] text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full mb-1">
-                    🎟️ 20% OFF Activo en tu Cuenta
+                    🎟️ 20% de Descuento Activo en tu Cuenta
                   </div>
                   <h2 className="text-xl md:text-2xl font-black text-[#111]">
                     Hola, {userName}
@@ -273,7 +273,7 @@ export default function RankingPage() {
                 href="/#productos"
                 className="bg-[#f56d29] hover:bg-[#e05819] text-white text-xs font-black uppercase tracking-widest px-6 py-4 rounded-xl transition-all shadow-md shrink-0 flex items-center gap-2 ml-2 md:ml-0"
               >
-                <ShoppingBag className="w-4 h-4" /> Comprar con 20% OFF
+                <ShoppingBag className="w-4 h-4" /> Comprar con 20% de Descuento
               </Link>
             </div>
           )
@@ -591,7 +591,7 @@ export default function RankingPage() {
 
                       <div className="flex items-center gap-2 sm:gap-5 text-right shrink-0">
                         <div className="flex flex-col items-end">
-                          <span className="font-extrabold text-xs sm:text-sm text-[#111]">{pts % 1 === 0 ? pts : pts.toFixed(1)} <span className="text-[9px] text-[#888] font-bold">pts</span></span>
+                          <span className="font-extrabold text-xs sm:text-sm text-[#111]">{pts % 1 === 0 ? pts : pts.toFixed(1)} <span className="text-[9px] text-[#888] font-bold">puntos</span></span>
                           <span className="text-[8px] sm:text-[9px] text-[#888] uppercase tracking-wider">Puntos</span>
                         </div>
                         <div className="flex flex-col items-end w-14 sm:w-20">
@@ -646,7 +646,7 @@ export default function RankingPage() {
                           {qualifies ? (
                             <span className="bg-emerald-100 text-emerald-700 text-[8px] font-black uppercase px-2 py-0.5 rounded-full">Clasificado (&gt; $20)</span>
                           ) : (
-                            <span className="bg-orange-100 text-[#f56d29] text-[8px] font-black uppercase px-2 py-0.5 rounded-full">20% OFF Activo</span>
+                            <span className="bg-orange-100 text-[#f56d29] text-[8px] font-black uppercase px-2 py-0.5 rounded-full">20% Dcto Activo</span>
                           )}
                         </div>
                         <p className="text-[10px] text-[#888] truncate">{client.correo}</p>
@@ -741,7 +741,7 @@ export default function RankingPage() {
               </div>
               <div className="bg-[#fdfbf7] rounded-xl p-3 border border-[#e8e4d8]">
                 <span className="text-[9px] text-[#888] font-bold uppercase tracking-widest block mb-1">Descuento</span>
-                <span className="font-extrabold text-[#25D366]">20% OFF</span>
+                <span className="font-extrabold text-[#25D366]">20% Dcto</span>
               </div>
             </div>
           </motion.div>
@@ -766,7 +766,7 @@ export default function RankingPage() {
             <div className="flex flex-col gap-2.5 mb-4 text-xs text-[#555]">
               <div className="flex items-start gap-2.5 bg-[#fdfbf7] p-3 rounded-xl border border-[#e8e4d8]">
                 <span className="font-black text-[#f56d29] text-xs shrink-0">1.</span>
-                <span className="font-medium">Regístrate en Club GAB para activar tu 20% OFF en compras.</span>
+                <span className="font-medium">Regístrate en Club GAB para activar tu 20% de descuento en compras.</span>
               </div>
               <div className="flex items-start gap-2.5 bg-[#fdfbf7] p-3 rounded-xl border border-[#e8e4d8]">
                 <span className="font-black text-[#f56d29] text-xs shrink-0">2.</span>

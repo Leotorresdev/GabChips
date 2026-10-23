@@ -43,7 +43,7 @@ export function MarketingInfo() {
               Club de Compradores
             </h3>
             <p className="text-[#666] text-sm leading-relaxed mb-8">
-              Diseñado para nuestros clientes más fieles y apasionados por el buen crunch. Cada orden confirmada suma puntos y te posiciona en el ranking oficial de GAB Chips.
+              Diseñado para nuestros clientes más fieles y apasionados por el mejor sabor crujiente. Cada orden confirmada suma puntos y te posiciona en el ranking oficial de GAB Chips.
             </p>
 
             <ul className="flex flex-col gap-3.5 mb-8">

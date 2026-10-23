@@ -50,7 +50,7 @@ export function CartDrawer() {
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 28, stiffness: 260 }}
             className="fixed inset-y-0 right-0 z-[100] flex w-full max-w-md flex-col bg-[#fdfbf7] shadow-2xl"
-            aria-label="Carrito"
+            aria-label="Carrito de compras"
           >
             <header className="flex items-center justify-between border-b border-[#e8e2d9] bg-white px-6 py-5">
               <div className="flex items-center gap-3">
@@ -63,7 +63,7 @@ export function CartDrawer() {
                 type="button"
                 onClick={close}
                 className="grid h-10 w-10 place-items-center rounded-full hover:bg-black/5 text-[#555] cursor-pointer"
-                aria-label="Cerrar"
+                aria-label="Cerrar carrito"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -73,11 +73,11 @@ export function CartDrawer() {
               {items.length === 0 ? (
                 <div className="flex h-full flex-col items-center justify-center text-center">
                   <div className="grid h-24 w-24 place-items-center rounded-full bg-white shadow-sm border border-[#e8e2d9] text-5xl mb-6">
-                    ðŸ¥”
+                    🥔
                   </div>
-                  <p className="font-black text-2xl text-[#111] uppercase">EstÃ¡ vacÃ­o</p>
+                  <p className="font-black text-2xl text-[#111] uppercase">Está vacío</p>
                   <p className="mt-2 text-sm text-[#666] font-medium max-w-[250px]">
-                    AÃ±ade nuestras deliciosas papas artesanales y prepÃ¡rate para el mejor crunch.
+                    Añade nuestras deliciosas papas artesanales y prepárate para disfrutar del toque más crujiente.
                   </p>
                   <button
                     type="button"
@@ -91,9 +91,9 @@ export function CartDrawer() {
                 <div>
                   {/* Banner de compra por docenas y precio mayorista */}
                   <div className="mb-4 rounded-xl bg-orange-50/80 border border-orange-200/80 p-3 flex items-center gap-2.5">
-                    <span className="text-xl">ðŸ“¦</span>
+                    <span className="text-xl">📦</span>
                     <p className="text-[11px] text-[#444] font-medium leading-tight">
-                      <strong className="text-[#f56d29] font-black">Â¡Pide por docenas!</strong> Disfruta de precios mayoristas especiales a partir de 12 unidades.
+                      <strong className="text-[#f56d29] font-black">¡Pide por docenas!</strong> Disfruta de precios mayoristas especiales a partir de 12 unidades.
                     </p>
                   </div>
 
@@ -164,13 +164,13 @@ export function CartDrawer() {
                                 type="button"
                                 onClick={() => remove(item.id)}
                                 className="text-[#888] hover:text-red-500 transition-colors p-1 absolute top-3 right-3 cursor-pointer"
-                                aria-label="Eliminar"
+                                aria-label="Eliminar producto"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>
                             </div>
 
-                            {/* Acceso RÃ¡pido por Docenas */}
+                            {/* Acceso Rápido por Docenas */}
                             <div className="pt-2.5 border-t border-[#f0ede6] flex flex-wrap items-center justify-between gap-1.5">
                               <span className="text-[9px] font-black uppercase tracking-wider text-[#777] flex items-center gap-1">
                                 <Sparkles className="w-2.5 h-2.5 text-[#f56d29]" /> Docenas:
@@ -221,7 +221,7 @@ export function CartDrawer() {
                               </div>
                             </div>
 
-                            {/* Stepper de Unidades y Monto Total */}
+                            {/* Control de Unidades y Monto Total */}
                             <div className="flex items-center justify-between pt-1">
                               <div className="flex items-center gap-2">
                                 <div className="flex items-center gap-1 rounded-lg bg-[#fdfbf7] border border-[#e8e2d9] p-1 shadow-inner">
@@ -278,7 +278,7 @@ export function CartDrawer() {
               <footer className="border-t border-[#e8e2d9] bg-white px-6 py-6 space-y-5">
                 <div className="flex items-center justify-between">
                   <span className="text-[13px] font-black uppercase tracking-widest text-[#555]">
-                    Total Estimado {isLoggedIn && <span className="text-[#25D366]">(20% OFF)</span>}
+                    Total Estimado {isLoggedIn && <span className="text-[#25D366]">(20% DE DESCUENTO)</span>}
                   </span>
                   <div className="text-right">
                     {isLoggedIn && <span className="block text-[10px] line-through text-[#888] font-bold">${subtotal().toFixed(2)}</span>}
@@ -290,13 +290,13 @@ export function CartDrawer() {
                 <button
                   type="button"
                   onClick={goCheckout}
-                  className="group flex w-full items-center justify-center gap-2 rounded-2xl bg-[#111] px-6 py-4 text-xs font-black uppercase tracking-widest text-white shadow-xl shadow-black/10 transition-all hover:-translate-y-1 hover:shadow-2xl hover:bg-[#f56d29]"
+                  className="group flex w-full items-center justify-center gap-2 rounded-2xl bg-[#111] px-6 py-4 text-xs font-black uppercase tracking-widest text-white shadow-xl shadow-black/10 transition-all hover:-translate-y-1 hover:shadow-2xl hover:bg-[#f56d29] cursor-pointer"
                 >
-                  Continuar Compra
+                  Finalizar Pedido
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" strokeWidth={3} />
                 </button>
                 <p className="text-center text-[10px] font-bold uppercase tracking-widest text-[#888]">
-                  Opciones de delivery disponibles en el pago
+                  Envíos a todo el país disponibles al confirmar tu compra
                 </p>
               </footer>
             )}

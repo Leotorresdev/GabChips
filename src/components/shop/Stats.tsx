@@ -13,7 +13,7 @@ export function Stats() {
       >
         <div className="flex-1">
           <span className="text-[10px] font-bold text-[#f56d29] uppercase tracking-widest mb-2 block">
-            SERVICIO DIRECTO • GAB CONCIERGE
+            SERVICIO DIRECTO • ATENCIÓN PERSONALIZADA GAB
           </span>
           <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-2">
             ¿Dudas con tu pedido o compras por volumen?

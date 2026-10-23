@@ -170,7 +170,7 @@ export function CheckoutForm() {
         hasReceipt: !!receiptPreview,
       };
 
-      // Guardar orden completa para respaldo en localStorage
+      // Guardar orden completa para respaldo en almacenamiento local
       if (typeof window !== "undefined") {
         try {
           localStorage.setItem("gab_last_order", JSON.stringify(orderPayload));
@@ -207,7 +207,7 @@ export function CheckoutForm() {
           </h3>
           {isLoggedIn && (
             <span className="text-[10px] font-black uppercase tracking-widest bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full">
-              20% OFF Aplicado
+              20% de Descuento Aplicado
             </span>
           )}
         </div>
@@ -351,7 +351,7 @@ export function CheckoutForm() {
             <div className="mt-1">
               <label className="block text-[10px] font-bold uppercase tracking-widest text-[#888] mb-1.5 flex items-center justify-between">
                 <span>Comprobante de Pago (Captura de Pantalla / Foto)</span>
-                <span className="text-[#f56d29] text-[9px] font-bold">Screenshot del banco</span>
+                <span className="text-[#f56d29] text-[9px] font-bold">Foto o captura bancaria</span>
               </label>
 
               {!receiptPreview ? (
@@ -360,7 +360,7 @@ export function CheckoutForm() {
                     <Upload className="w-5 h-5" />
                   </div>
                   <span className="text-xs font-black text-[#111]">
-                    Toca aquí para subir el capture del comprobante
+                    Toca aquí para subir la captura del comprobante
                   </span>
                   <span className="text-[10px] text-[#888] font-medium mt-0.5">
                     Imagen o captura de tu Pago Móvil / Transferencia (JPG o PNG)
@@ -377,7 +377,7 @@ export function CheckoutForm() {
                   <div className="w-14 h-14 rounded-xl overflow-hidden bg-white border border-emerald-300 shrink-0">
                     <img
                       src={receiptPreview}
-                      alt="Capture de pago"
+                      alt="Captura de comprobante de pago"
                       className="w-full h-full object-cover"
                     />
                   </div>

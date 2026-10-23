@@ -40,11 +40,7 @@ export function SuccessView() {
     setWhatsappUrl(`https://wa.me/${OFFICIAL_WHATSAPP_NUMBER}?text=${encodeURIComponent(fallbackText)}`);
   }, [bankRef, amountUsd, amountVes]);
 
-  const eta = isNacional || deliveryType === "nacional"
-    ? "Envío Nacional: Se despacha en 24h y te enviamos la guía por WhatsApp"
-    : deliveryType === "pickup"
-    ? "15 min · listo para retirar en tienda Caracas"
-    : "25–35 min a tu puerta (Caracas)";
+  const eta = "Envío Nacional: Se despacha en 24h y te enviamos la guía por WhatsApp";
 
   return (
     <ShopChrome>

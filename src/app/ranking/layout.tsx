@@ -131,7 +131,7 @@ export default function RankingLayout({ children }: { children: React.ReactNode 
                   <div className="flex flex-col items-end min-w-0">
                     <span className="text-[11px] sm:text-xs font-black text-[#111] truncate max-w-[65px] sm:max-w-none">{userName}</span>
                     <span className="text-[8px] sm:text-[9px] font-bold text-[#f56d29] uppercase tracking-wider truncate max-w-[65px] sm:max-w-none">
-                      {hasPurchasedOver20 ? "Clasificado" : "20% OFF"}
+                      {hasPurchasedOver20 ? "Clasificado" : "20% Dcto"}
                     </span>
                   </div>
                   <div className="w-7 h-7 sm:w-9 sm:h-9 bg-[#111] rounded-full flex items-center justify-center text-white font-bold text-[10px] sm:text-xs uppercase shadow-sm shrink-0">

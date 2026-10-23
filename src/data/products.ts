@@ -149,7 +149,7 @@ export const products: Product[] = [
     wholesaleMin: 12,
     tags: ["100% Crujiente", "Artesanal"],
     weight: "50g",
-    badge: "Súper Crunch",
+    badge: "Súper Crujiente",
   },
   {
     id: "harina-chicharron",
@@ -161,7 +161,7 @@ export const products: Product[] = [
     price: 2.00,
     wholesalePrice: 2.00,
     wholesaleMin: 999999,
-    tags: ["250g", "100% Puro", "Keto"],
+    tags: ["250g", "100% Puro", "Cetogénico"],
     weight: "250g",
     badge: "Solo Detal",
     retailOnly: true,

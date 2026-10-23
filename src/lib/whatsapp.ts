@@ -70,7 +70,7 @@ export function buildOrderWhatsAppUrl(details: OrderWhatsAppDetails): string {
     ].join("\n");
   } else if (deliveryType === "delivery") {
     deliverySection = [
-      `🛵 *DATOS DE DELIVERY:*`,
+      `🛵 *DATOS DE ENVÍO / ENTREGA:*`,
       `• *Calle / Av:* ${deliveryInfo.street || "No especificado"}`,
       `• *Edif / Casa:* ${deliveryInfo.number || "No especificado"}`,
       `• *Referencia:* ${deliveryInfo.reference || "Ninguna"}`,
