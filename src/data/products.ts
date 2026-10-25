@@ -54,7 +54,7 @@ export const products: Product[] = [
         id: "100g",
         name: "100 gramos",
         weight: "100g",
-        price: 1.00,
+        price: 1.50,
         dozenPrice: 13.00,
         wholesalePrice: 13 / 12, // ~$1.08 c/u al mayor ($13 docena)
       },
@@ -86,7 +86,7 @@ export const products: Product[] = [
         id: "100g",
         name: "100 gramos",
         weight: "100g",
-        price: 1.00,
+        price: 1.50,
         dozenPrice: 13.00,
         wholesalePrice: 13 / 12, // ~$1.08 c/u al mayor ($13 docena)
       },
@@ -117,7 +117,7 @@ export const products: Product[] = [
         id: "100g",
         name: "100 gramos",
         weight: "100g",
-        price: 1.00,
+        price: 1.50,
         dozenPrice: 13.00,
         wholesalePrice: 13 / 12, // ~$1.08 c/u al mayor ($13 docena)
       },
