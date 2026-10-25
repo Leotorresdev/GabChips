@@ -92,33 +92,35 @@ export function buildOrderWhatsAppUrl(details: OrderWhatsAppDetails): string {
         .join("\n")
     : "• Sin productos";
 
+  const divider = "----------------------------------------";
+
   const lines = [
     `🍟 *ORDEN DE PEDIDO · GAB CHIPS* 🍟`,
     orderRef ? `🧾 *Pedido:* #${orderRef}` : `🧾 *Pedido Web*`,
-    `━━━━━━━━━━━━━━━━━━`,
+    divider,
     `👤 *DATOS DEL CLIENTE:*`,
     `• *Nombre:* ${customerName}`,
     customerEmail ? `• *Correo:* ${customerEmail}` : null,
     customerPhone ? `• *Teléfono:* ${customerPhone}` : null,
-    `━━━━━━━━━━━━━━━━━━`,
+    divider,
     deliverySection,
-    `━━━━━━━━━━━━━━━━━━`,
+    divider,
     `🛍️ *DETALLE DE PRODUCTOS:*`,
     itemsList,
-    `━━━━━━━━━━━━━━━━━━`,
+    divider,
     `💰 *TOTAL A PAGAR:*`,
     `💵 *$${totalUsd.toFixed(2)} USD*`,
     `🇻🇪 *Bs. ${totalVes.toLocaleString("es-VE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}*`,
     rateBcv ? `📊 *Tasa BCV:* Bs. ${rateBcv.toFixed(2)}` : null,
-    `━━━━━━━━━━━━━━━━━━`,
+    divider,
     `🏦 *DATOS DEL PAGO (BNC):*`,
     paymentRef ? `• *Ref. Bancaria:* #${paymentRef}` : null,
     hasReceipt ? `• *Comprobante:* 📸 Adjunto captura a este chat` : `• *Comprobante:* Adjunto captura a continuación`,
-    `━━━━━━━━━━━━━━━━━━`,
+    divider,
     `_Hola GAB Chips, les comparto los datos de mi pedido, envío nacional y comprobante para coordinar el despacho. ¡Muchas gracias!_`,
   ]
     .filter(Boolean)
     .join("\n");
 
-  return `https://wa.me/${OFFICIAL_WHATSAPP_NUMBER}?text=${encodeURIComponent(lines)}`;
+  return `https://api.whatsapp.com/send?phone=${OFFICIAL_WHATSAPP_NUMBER}&text=${encodeURIComponent(lines)}`;
 }

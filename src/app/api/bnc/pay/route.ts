@@ -186,36 +186,48 @@ export async function POST(req: Request) {
     const clientName = customer.name.trim();
     const clientEmail = customer.email.trim().toLowerCase();
 
-    try {
-      const { data: existingClient } = await supabase
-        .from("clientes")
-        .select("*")
-        .eq("correo", clientEmail)
-        .maybeSingle();
+    const isSupabaseConfigured =
+      process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      !process.env.NEXT_PUBLIC_SUPABASE_URL.includes("placeholder");
 
-      let newTotal = Number(amountUsd);
-      if (existingClient) {
-        newTotal = Number(existingClient.total_comprado || 0) + Number(amountUsd);
-        await supabase
-          .from("clientes")
-          .update({
-            total_comprado: Number(newTotal.toFixed(2)),
-            ordenes_count: Number(existingClient.ordenes_count || 0) + 1,
-            nombre: clientName || existingClient.nombre,
-          })
-          .eq("correo", clientEmail);
-      } else {
-        await supabase
-          .from("clientes")
-          .insert([{
-            nombre: clientName,
-            correo: clientEmail,
-            total_comprado: Number(newTotal.toFixed(2)),
-            ordenes_count: 1,
-          }]);
+    if (isSupabaseConfigured) {
+      try {
+        const syncCustomerDb = async () => {
+          const { data: existingClient } = await supabase
+            .from("clientes")
+            .select("*")
+            .eq("correo", clientEmail)
+            .maybeSingle();
+
+          let newTotal = Number(amountUsd);
+          if (existingClient) {
+            newTotal = Number(existingClient.total_comprado || 0) + Number(amountUsd);
+            await supabase
+              .from("clientes")
+              .update({
+                total_comprado: Number(newTotal.toFixed(2)),
+                ordenes_count: Number(existingClient.ordenes_count || 0) + 1,
+                nombre: clientName || existingClient.nombre,
+              })
+              .eq("correo", clientEmail);
+          } else {
+            await supabase
+              .from("clientes")
+              .insert([{
+                nombre: clientName,
+                correo: clientEmail,
+                total_comprado: Number(newTotal.toFixed(2)),
+                ordenes_count: 1,
+              }]);
+          }
+        };
+
+        // Timeout seguro de 2 segundos para asegurar respuesta inmediata
+        const timeout = new Promise((resolve) => setTimeout(resolve, 2000));
+        await Promise.race([syncCustomerDb(), timeout]);
+      } catch (dbErr) {
+        console.warn("Aviso al sincronizar cliente en Supabase:", dbErr);
       }
-    } catch (dbErr) {
-      console.warn("Aviso al sincronizar cliente en Supabase:", dbErr);
     }
 
     return NextResponse.json({

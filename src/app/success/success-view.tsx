@@ -37,8 +37,18 @@ export function SuccessView() {
 
     // Fallback básico con parámetros de URL si no hay localStorage
     const fallbackText = `🍟 *NUEVO PEDIDO · GAB CHIPS*\n🧾 Ref Bancaria: #${bankRef || "PAGO-WEB"}\n💰 Total: $${amountUsd || "0.00"} USD (Bs. ${amountVes || "0.00"})\n_Hola, les comparto los datos de mi pedido para coordinar el despacho._`;
-    setWhatsappUrl(`https://wa.me/${OFFICIAL_WHATSAPP_NUMBER}?text=${encodeURIComponent(fallbackText)}`);
+    setWhatsappUrl(`https://api.whatsapp.com/send?phone=${OFFICIAL_WHATSAPP_NUMBER}&text=${encodeURIComponent(fallbackText)}`);
   }, [bankRef, amountUsd, amountVes]);
+
+  // Redirección automática a WhatsApp tras mostrar la pantalla de confirmación exitosa
+  useEffect(() => {
+    if (whatsappUrl) {
+      const timer = setTimeout(() => {
+        window.location.href = whatsappUrl;
+      }, 1200);
+      return () => clearTimeout(timer);
+    }
+  }, [whatsappUrl]);
 
   const eta = "Envío Nacional: Se despacha en 24h y te enviamos la guía por WhatsApp";
 

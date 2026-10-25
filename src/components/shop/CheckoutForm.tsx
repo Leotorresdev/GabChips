@@ -186,10 +186,14 @@ export function CheckoutForm() {
       login(customerName, customerEmail, totalUsd);
       clear();
 
-      // Enviar directamente a WhatsApp con todos los datos ordenados en plantilla
-      if (typeof window !== "undefined") {
-        window.location.href = whatsappUrl;
-      }
+      // Navegar a la pantalla oficial de Éxito / Confirmación
+      const queryParams = new URLSearchParams({
+        ref: orderPayload.orderRef,
+        amount: totalUsd.toFixed(2),
+        ves: totalVes.toFixed(2),
+      });
+
+      router.push(`/success?${queryParams.toString()}`);
     } catch (err) {
       console.error("Error al procesar el pago:", err);
       setErrorMessage("Ocurrió un problema de comunicación al verificar tu pago. Por favor reintenta.");
