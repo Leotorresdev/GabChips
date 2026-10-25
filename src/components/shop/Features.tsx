@@ -17,7 +17,7 @@ const features = [
   {
     icon: ShieldCheck,
     title: "Garantía 100% Crujiente",
-    desc: "Sellado en atmósfera protectora con empaque resistente. Si no cruje al abrirla, te enviamos otra.",
+    desc: "Empaque bien sellado para que lleguen frescas y súper crujientes a tus manos.",
   },
 ];
 
