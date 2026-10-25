@@ -101,9 +101,20 @@ export function CheckoutForm() {
       return;
     }
 
-    if (!deliveryInfo.city?.trim() || !deliveryInfo.agencyAddress?.trim()) {
-      setErrorMessage("Por favor completa los datos de envío nacional (Ciudad y Dirección/Agencia).");
-      return;
+    if (deliveryType === "delivery") {
+      if (!deliveryInfo.street?.trim()) {
+        setErrorMessage("Por favor ingresa el sector o zona de entrega en Boconó.");
+        return;
+      }
+      if (!deliveryInfo.phone?.trim() && !deliveryInfo.receiverName?.trim()) {
+        setErrorMessage("Por favor ingresa el nombre y teléfono de contacto para el delivery en Boconó.");
+        return;
+      }
+    } else {
+      if (!deliveryInfo.city?.trim() || !deliveryInfo.agencyAddress?.trim()) {
+        setErrorMessage("Por favor completa los datos de envío nacional (Ciudad y Dirección/Agencia).");
+        return;
+      }
     }
 
     setLoading(true);

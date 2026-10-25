@@ -70,12 +70,15 @@ export function buildOrderWhatsAppUrl(details: OrderWhatsAppDetails): string {
     ].join("\n");
   } else if (deliveryType === "delivery") {
     deliverySection = [
-      `🛵 *DATOS DE ENVÍO / ENTREGA:*`,
-      `• *Calle / Av:* ${deliveryInfo.street || "No especificado"}`,
-      `• *Edif / Casa:* ${deliveryInfo.number || "No especificado"}`,
-      `• *Referencia:* ${deliveryInfo.reference || "Ninguna"}`,
-      `• *Teléfono:* ${receiverPhone}`,
-    ].join("\n");
+      `🛵 *DATOS DE DELIVERY LOCAL (BOCONÓ - GRATIS):*`,
+      `• *Zona / Sector:* ${deliveryInfo.street || "Boconó"}`,
+      deliveryInfo.number ? `• *Calle / Casa / Local:* ${deliveryInfo.number}` : null,
+      deliveryInfo.reference ? `• *Punto de Referencia:* ${deliveryInfo.reference}` : null,
+      `• *Nombre de quien recibe:* ${deliveryInfo.receiverName || customerName}`,
+      `• *Teléfono Destino (WhatsApp):* ${receiverPhone}`,
+    ]
+      .filter(Boolean)
+      .join("\n");
   } else {
     deliverySection = [
       `🏬 *RETIRO EN TIENDA:*`,

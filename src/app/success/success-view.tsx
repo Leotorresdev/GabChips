@@ -24,6 +24,9 @@ type StoredOrderData = {
   customerEmail?: string;
   deliveryType?: string;
   deliveryInfo?: {
+    street?: string;
+    number?: string;
+    reference?: string;
     state?: string;
     city?: string;
     agency?: string;
@@ -153,20 +156,36 @@ export function SuccessView() {
               </div>
             )}
 
-            {orderData?.deliveryInfo?.city && (
-              <div className="flex justify-between items-center py-1 border-b border-gray-100">
-                <span className="text-[#888] font-bold">Destino:</span>
-                <span className="font-bold text-[#111]">
-                  {orderData.deliveryInfo.city}, {orderData.deliveryInfo.state || "Venezuela"}
-                </span>
-              </div>
-            )}
-
-            {orderData?.deliveryInfo?.agency && (
-              <div className="flex justify-between items-center py-1 border-b border-gray-100">
-                <span className="text-[#888] font-bold">Agencia de Envío:</span>
-                <span className="font-bold text-[#111]">{orderData.deliveryInfo.agency}</span>
-              </div>
+            {orderData?.deliveryType === "delivery" ? (
+              <>
+                <div className="flex justify-between items-center py-1 border-b border-gray-100">
+                  <span className="text-[#888] font-bold">Método de Entrega:</span>
+                  <span className="font-bold text-emerald-600">🛵 Delivery en Boconó (Gratis)</span>
+                </div>
+                {orderData?.deliveryInfo?.street && (
+                  <div className="flex justify-between items-center py-1 border-b border-gray-100">
+                    <span className="text-[#888] font-bold">Dirección / Sector:</span>
+                    <span className="font-bold text-[#111]">{orderData.deliveryInfo.street}</span>
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                {orderData?.deliveryInfo?.city && (
+                  <div className="flex justify-between items-center py-1 border-b border-gray-100">
+                    <span className="text-[#888] font-bold">Destino Nacional:</span>
+                    <span className="font-bold text-[#111]">
+                      {orderData.deliveryInfo.city}, {orderData.deliveryInfo.state || "Venezuela"}
+                    </span>
+                  </div>
+                )}
+                {orderData?.deliveryInfo?.agency && (
+                  <div className="flex justify-between items-center py-1 border-b border-gray-100">
+                    <span className="text-[#888] font-bold">Agencia de Envío:</span>
+                    <span className="font-bold text-[#111]">{orderData.deliveryInfo.agency}</span>
+                  </div>
+                )}
+              </>
             )}
 
             {orderData?.items && orderData.items.length > 0 && (
@@ -206,15 +225,31 @@ export function SuccessView() {
           transition={{ delay: 0.4 }}
           className="mt-4 flex items-center gap-3 rounded-2xl border border-[#e8e4d8] bg-white px-5 py-4 shadow-sm max-w-md w-full text-left"
         >
-          <PackageCheck className="h-5 w-5 text-[#f56d29] shrink-0" />
-          <div className="text-xs">
-            <div className="text-[10px] uppercase font-bold text-[#888] tracking-widest">
-              Envío Nacional
-            </div>
-            <div className="font-extrabold text-[#111] mt-0.5">
-              Se despacha en 24h y te notificamos la guía de encomienda.
-            </div>
-          </div>
+          {orderData?.deliveryType === "delivery" ? (
+            <>
+              <span className="text-2xl shrink-0">🛵</span>
+              <div className="text-xs">
+                <div className="text-[10px] uppercase font-bold text-emerald-700 tracking-widest">
+                  Delivery Local Gratuito
+                </div>
+                <div className="font-extrabold text-[#111] mt-0.5">
+                  Llevamos tu pedido directamente hasta tu puerta o local en Boconó.
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <PackageCheck className="h-5 w-5 text-[#f56d29] shrink-0" />
+              <div className="text-xs">
+                <div className="text-[10px] uppercase font-bold text-[#888] tracking-widest">
+                  Envío Nacional (MRW / ZOOM)
+                </div>
+                <div className="font-extrabold text-[#111] mt-0.5">
+                  Se despacha en 24h y te notificamos la guía de encomienda.
+                </div>
+              </div>
+            </>
+          )}
         </motion.div>
 
         {/* Botón de Comunicarse al WhatsApp (Solo abre cuando el usuario lo toca) */}
