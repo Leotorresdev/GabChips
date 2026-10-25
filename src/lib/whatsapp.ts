@@ -122,5 +122,5 @@ export function buildOrderWhatsAppUrl(details: OrderWhatsAppDetails): string {
     .filter(Boolean)
     .join("\n");
 
-  return `https://api.whatsapp.com/send?phone=${OFFICIAL_WHATSAPP_NUMBER}&text=${encodeURIComponent(lines)}`;
+  return `https://wa.me/${OFFICIAL_WHATSAPP_NUMBER}?text=${encodeURIComponent(lines)}`;
 }
