@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Tractor, Zap, ShieldCheck } from "lucide-react";
+import { Tractor, Truck, ShieldCheck } from "lucide-react";
 
 const features = [
   {
@@ -10,14 +10,14 @@ const features = [
     desc: "Cultivadas en tierras altas con rotación natural. Cero pesticidas químicos y recolección manual.",
   },
   {
-    icon: Zap,
-    title: "Envío en 45 Minutos",
-    desc: "Despacho exprés para aperitivos de última hora en zona metropolitana o 24h a todo el país.",
+    icon: Truck,
+    title: "Envíos a Nivel Nacional",
+    desc: "Despacho seguro a todos los estados del país a través de agencias MRW y ZOOM.",
   },
   {
     icon: ShieldCheck,
     title: "Garantía 100% Crujiente",
-    desc: "Sellado en atmósfera protectora con papel kraft grueso. Si no cruje al romperla, te enviamos otra.",
+    desc: "Sellado en atmósfera protectora con empaque resistente. Si no cruje al abrirla, te enviamos otra.",
   },
 ];
 
