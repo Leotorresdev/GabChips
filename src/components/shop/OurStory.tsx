@@ -51,7 +51,7 @@ export function OurStory() {
             Nacimos con una convicción clara: las papas fritas merecen el mismo cuidado gastronómico que un buen vino o un café de origen.
           </p>
           <p className="text-[15px] text-[#555] leading-relaxed mb-10">
-            Cocinamos en pequeños lotes de producción artesanal dentro de calderos de cobre tradicionales. El corte grueso garantiza una mordida sonora, densa y sin exceso de grasa residual.
+            Cocinamos en pequeños lotes de producción artesanal dentro de calderos de acero inoxidable. El corte grueso garantiza una mordida sonora, densa y sin exceso de grasa residual.
           </p>
 
           <div className="grid grid-cols-3 gap-3 sm:gap-6 pt-2">
