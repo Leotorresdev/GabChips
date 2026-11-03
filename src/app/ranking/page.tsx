@@ -56,7 +56,7 @@ export default function RankingPage() {
   const [rankingAuthMsg, setRankingAuthMsg] = useState("");
   const [rankingLoading, setRankingLoading] = useState(false);
 
-  // Consultar clientes reales desde Supabase
+  // Consultar clientes reales desde Supabase y depurar usuarios de prueba (1, 2, 3 y 8)
   const fetchRanking = useCallback(async () => {
     setLoading(true);
     try {
@@ -68,7 +68,37 @@ export default function RankingPage() {
       if (error) {
         console.error("Error al obtener clientes de Supabase:", error);
       } else if (data) {
-        setClientes(data);
+        // Correos de prueba confirmados: #1 leoferson@gmail.com, #2 adrian@gmail.com, #3 grabriel@gmail.com, #8 luis@gmail.com
+        const testEmails = [
+          "leoferson@gmail.com",
+          "adrian@gmail.com",
+          "grabriel@gmail.com",
+          "luis@gmail.com",
+        ];
+
+        // Identificar si aún existen en la base de datos para eliminarlos
+        const recordsToDelete = data.filter(
+          (c) => c.correo && testEmails.includes(c.correo.toLowerCase())
+        );
+
+        if (recordsToDelete.length > 0) {
+          const ids = recordsToDelete.map((c) => c.id).filter(Boolean);
+          try {
+            if (ids.length > 0) {
+              await supabase.from("clientes").delete().in("id", ids);
+            }
+            await supabase.from("clientes").delete().in("correo", testEmails);
+          } catch (deleteErr) {
+            console.warn("Aviso al eliminar usuarios de prueba en Supabase:", deleteErr);
+          }
+        }
+
+        // Filtrar inmediatamente para que no figuren en la interfaz
+        const cleaned = data.filter(
+          (c) => !c.correo || !testEmails.includes(c.correo.toLowerCase())
+        );
+
+        setClientes(cleaned);
       }
     } catch (err) {
       console.error("Error de conexión:", err);
