@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, Trophy } from "lucide-react";
 
 export function Hero() {
   return (
@@ -80,13 +81,14 @@ export function Hero() {
             transition={{ delay: 0.3 }}
             className="mt-8 md:mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full sm:w-auto"
           >
-            <a
-              href="#productos"
-              className="group flex items-center justify-center gap-2 bg-[#f56d29] md:bg-[#111] text-white px-7 py-4 text-sm font-black hover:bg-black transition-all rounded-full shadow-xl shadow-black/25 text-center"
+            <Link
+              href="/ranking"
+              className="group flex items-center justify-center gap-2 bg-[#f56d29] md:bg-[#111] text-white px-7 py-4 text-sm font-black hover:bg-black transition-all rounded-full shadow-xl shadow-black/25 text-center cursor-pointer"
             >
-              Ordenar Ahora
+              <Trophy className="h-4 w-4 text-orange-400 shrink-0" />
+              <span>Ver Ranking</span>
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </a>
+            </Link>
             <a
               href="#productos"
               className="flex items-center justify-center gap-2 bg-white/20 backdrop-blur-md border border-white/30 text-white md:text-[#111] px-7 py-4 text-sm font-black hover:bg-white hover:text-[#111] transition-all rounded-full text-center"
