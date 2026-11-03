@@ -23,7 +23,7 @@
 
 **GAB Chips** es una plataforma web moderna creada para la comercialización y distribución de snacks premium artesanales (papas fritas gourmet con sal marina, corte grueso *small-batch*, etc.). 
 
-El sistema combina una experiencia de compra rápida y confiable pensada para el mercado venezolano con un programa de fidelización y comisiones que impulsa a los clientes a convertirse en embajadores de la marca.
+El sistema combina una experiencia de compra rápida y confiable pensada para el mercado venezolano con un programa de fidelización y recompensas que premia a los clientes en el ranking oficial de la marca.
 
 ---
 
@@ -45,7 +45,7 @@ El sistema combina una experiencia de compra rápida y confiable pensada para el
 - **20% OFF para Nuevos Clientes:** Activación automática de descuento exclusivo con tan solo registrar nombre y correo.
 - **Sincronización en Tiempo Real con Supabase:** Persistencia segura de clientes, compras acumuladas y volumen total.
 - **Clasificación Oficial:** Los clientes con compras acumuladas mayores a **$20.00 USD** clasifican automáticamente en la **Tabla Oficial de Embajadores**.
-- **Gamificación y Comisiones:** Cálculo estimado de comisiones (15%) y asignación de 10 puntos por cada dólar consumido.
+- **Gamificación y Puntos Oficiales:** Asignación de puntos por consumo y premios para los 3 primeros puestos del Ranking Nacional.
 
 ### 📱 4. Experiencia 100% Mobile-First
 - Diseñado meticulosamente para teléfonos inteligentes (360px a 430px), garantizando botones de toque ergonómicos, tipografía legible y navegación ultrarrápida.

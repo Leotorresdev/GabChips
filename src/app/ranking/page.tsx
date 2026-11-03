@@ -724,7 +724,7 @@ export default function RankingPage() {
         {/* Right Column - Widgets Dinámicos (Sin enlace de referido) */}
         <div className="flex flex-col gap-6">
           
-          {/* Card 1: Balance / Comisión */}
+          {/* Card 1: Mi Puntaje y Estado en el Ranking */}
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -734,26 +734,31 @@ export default function RankingPage() {
             <div className="flex justify-between items-start mb-2">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-[#fdfbf7] flex items-center justify-center text-[#f56d29] border border-[#e8e4d8]">
-                  <Wallet className="w-4 h-4" />
+                  <Trophy className="w-4 h-4" />
                 </div>
-                <h3 className="font-bold text-sm text-[#111]">Mi Comisión<br/>Estimada</h3>
+                <h3 className="font-bold text-sm text-[#111]">Mi Puntaje<br/>Oficial</h3>
               </div>
-              <span className="bg-[#f5f3ec] text-[#555] text-[9px] font-bold uppercase tracking-widest px-2 py-1 rounded">USD</span>
+              <span className="bg-[#f5f3ec] text-[#555] text-[9px] font-bold uppercase tracking-widest px-2 py-1 rounded">
+                Puntos GAB
+              </span>
             </div>
             
             <div className="mt-4 mb-2">
               <span className="text-3xl font-extrabold text-[#111] tracking-tight">
-                ${(myTotal * 0.15).toFixed(2)}
+                {myPoints % 1 === 0 ? myPoints : myPoints.toFixed(1)}{" "}
+                <span className="text-base font-bold text-[#888]">pts</span>
               </span>
               <div className="flex items-center gap-1.5 mt-1 text-xs text-[#666] font-medium">
-                <Clock className="w-3.5 h-3.5 text-[#f56d29]" />
-                15% sobre tus compras acumuladas
+                <Sparkles className="w-3.5 h-3.5 text-[#f56d29]" />
+                {isOver20 
+                  ? `Posición #${myRank || 1} en el Ranking Nacional` 
+                  : "Acumula compras > $20 para ingresar al ranking"}
               </div>
             </div>
             
             <div className="inline-flex items-center gap-1.5 bg-[#fdfbf7] border border-[#f56d29]/30 text-[#f56d29] text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-6">
               <span className="w-1.5 h-1.5 rounded-full bg-[#f56d29] animate-pulse"></span>
-              {isOver20 ? "Comisión de Embajador Activa" : "Requiere compras > $20"}
+              {isOver20 ? "Clasificado en Ranking" : "Requiere compras > $20"}
             </div>
             
             <Link 
