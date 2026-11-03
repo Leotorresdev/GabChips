@@ -50,22 +50,32 @@ export function OurStory() {
           <p className="text-[15px] text-[#555] leading-relaxed mb-4">
             Nacimos con una convicción clara: las papas fritas merecen el mismo cuidado gastronómico que un buen vino o un café de origen.
           </p>
-          <p className="text-[15px] text-[#555] leading-relaxed mb-10">
+          <p className="text-[15px] text-[#555] leading-relaxed mb-5">
             Cocinamos en pequeños lotes de producción artesanal dentro de freidoras de acero inoxidable. El corte grueso garantiza una mordida sonora, densa y sin exceso de grasa residual.
           </p>
 
-          <div className="grid grid-cols-3 gap-3 sm:gap-6 pt-2">
-            <div>
-              <span className="block text-xl sm:text-2xl font-extrabold text-[#111] mb-1">100%</span>
-              <span className="text-[9px] sm:text-[10px] text-[#888] font-semibold leading-tight block">Manteca de cerdo</span>
+          {/* Bloque nutricional: Fritura saludable y categoría keto */}
+          <div className="bg-[#f56d29]/10 border-l-4 border-[#f56d29] p-4 rounded-r-2xl mb-8">
+            <p className="text-[14px] text-[#222] font-medium leading-relaxed">
+              <strong className="text-[#111] font-bold">Gab Chips:</strong> Fritura 100% en manteca de cerdo pura. Es un perfil lipídico estable, de categoría keto, que aporta una densidad nutricional real y cero aceites hidrogenados de baja calidad.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-3 gap-3 sm:gap-4 pt-2 items-center">
+            <div className="p-2.5 sm:p-3.5 rounded-2xl bg-white border border-[#ede8dd] shadow-2xs">
+              <span className="block text-xl sm:text-2xl font-extrabold text-[#111] mb-0.5">100%</span>
+              <span className="text-[9px] sm:text-[10px] text-[#777] font-semibold leading-tight block">Manteca de cerdo</span>
             </div>
-            <div>
-              <span className="block text-xl sm:text-2xl font-extrabold text-[#111] mb-1">1.8mm</span>
-              <span className="text-[9px] sm:text-[10px] text-[#888] font-semibold leading-tight block">Grosor de Corte</span>
+            <div className="p-2.5 sm:p-3.5 rounded-2xl bg-white border border-[#ede8dd] shadow-2xs">
+              <span className="block text-xl sm:text-2xl font-extrabold text-[#111] mb-0.5">1.8mm</span>
+              <span className="text-[9px] sm:text-[10px] text-[#777] font-semibold leading-tight block">Grosor de Corte</span>
             </div>
-            <div>
-              <span className="block text-xl sm:text-2xl font-extrabold text-[#111] mb-1">0%</span>
-              <span className="text-[9px] sm:text-[10px] text-[#888] font-semibold leading-tight block">Cero Aditivos</span>
+            {/* Destacado 0% Cero Aditivos */}
+            <div className="p-2.5 sm:p-3.5 rounded-2xl bg-orange-500/10 border-2 border-[#f56d29] shadow-sm relative overflow-hidden ring-2 ring-[#f56d29]/20">
+              <span className="block text-xl sm:text-2xl font-black text-[#e05819] mb-0.5">0%</span>
+              <span className="text-[9px] sm:text-[10px] text-[#e05819] font-black leading-tight block uppercase tracking-wider">
+                Cero Aditivos
+              </span>
             </div>
           </div>
         </motion.div>

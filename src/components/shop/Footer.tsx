@@ -3,6 +3,8 @@
 import {
   Phone,
   MapPin,
+  Mail,
+  FileText,
   Smartphone,
   Truck,
   ShieldCheck,
@@ -64,13 +66,33 @@ export function Footer() {
             <p className="mt-4 text-sm max-w-xs text-[#aaa] leading-relaxed">
               Snacks 100% artesanales con la mejor calidad venezolana. Venta al detal y por docenas.
             </p>
+            <div className="mt-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-xs text-gray-300 font-mono">
+              <FileText className="h-3.5 w-3.5 text-[#f56d29]" />
+              <span>RIF: J-505151452</span>
+            </div>
           </div>
 
           <div>
             <h4 className="font-extrabold text-white">Contacto</h4>
-            <ul className="mt-4 space-y-2 text-sm text-[#aaa]">
+            <ul className="mt-4 space-y-2.5 text-sm text-[#aaa]">
               <li className="flex items-center gap-2">
-                <Phone className="h-4 w-4 text-[#f56d29] shrink-0" /> 0424-4493286
+                <FileText className="h-4 w-4 text-[#f56d29] shrink-0" />
+                <span>RIF: J-505151452</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Phone className="h-4 w-4 text-[#f56d29] shrink-0" />
+                <a href="tel:04244493286" className="hover:text-white transition-colors">
+                  0424-4493286
+                </a>
+              </li>
+              <li className="flex items-center gap-2">
+                <Mail className="h-4 w-4 text-[#f56d29] shrink-0" />
+                <a
+                  href="mailto:gabchipsccs@gmail.com"
+                  className="hover:text-white transition-colors"
+                >
+                  gabchipsccs@gmail.com
+                </a>
               </li>
               <li className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-[#f56d29] shrink-0" /> Boconó, Estado Trujillo, Venezuela
@@ -95,7 +117,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-white/10 px-4 py-5 text-center text-xs text-[#777]">
-          © {new Date().getFullYear()} GAB Chips. Hecho en Venezuela con 🧡.
+          © {new Date().getFullYear()} GAB Chips · RIF: J-505151452. Hecho en Venezuela con 🧡.
         </div>
       </footer>
     </>

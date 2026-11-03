@@ -140,7 +140,7 @@ export function ProductCard({
                         isSelected ? "text-orange-300" : "text-[#888]"
                       }`}
                     >
-                      Docena ${p.dozenPrice.toFixed(0)}
+                      Docena ${p.dozenPrice % 1 === 0 ? p.dozenPrice.toFixed(0) : p.dozenPrice.toFixed(2)}
                     </span>
                   </button>
                 );

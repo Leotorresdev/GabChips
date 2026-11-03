@@ -35,8 +35,8 @@ export const products: Product[] = [
     image: "/images/papas-naturales.jpg",
     category: "papas",
     categoryLabel: "RECETA ARTESANAL",
-    price: 1.00,
-    wholesalePrice: 9 / 12,
+    price: 1.25,
+    wholesalePrice: 11.25 / 12,
     wholesaleMin: 12,
     tags: ["100% Natural", "Solo Sal"],
     weight: "60g",
@@ -46,17 +46,17 @@ export const products: Product[] = [
         id: "60g",
         name: "60 gramos",
         weight: "60g",
-        price: 1.00,
-        dozenPrice: 9.00,
-        wholesalePrice: 9 / 12, // $0.75 c/u al mayor
+        price: 1.25,
+        dozenPrice: 11.25,
+        wholesalePrice: 11.25 / 12, // $0.9375 c/u al mayor ($11.25 docena)
       },
       {
         id: "100g",
         name: "100 gramos",
         weight: "100g",
-        price: 1.50,
-        dozenPrice: 13.00,
-        wholesalePrice: 13 / 12, // ~$1.08 c/u al mayor ($13 docena)
+        price: 1.88,
+        dozenPrice: 16.25,
+        wholesalePrice: 16.25 / 12, // ~$1.35 c/u al mayor ($16.25 docena)
       },
     ],
   },
@@ -67,8 +67,8 @@ export const products: Product[] = [
     image: "/images/papas-queso.jpg",
     category: "papas",
     categoryLabel: "SABOR A QUESO",
-    price: 1.00,
-    wholesalePrice: 9 / 12,
+    price: 1.25,
+    wholesalePrice: 11.25 / 12,
     wholesaleMin: 12,
     tags: ["Sabor Queso", "Crocante"],
     weight: "60g",
@@ -78,17 +78,17 @@ export const products: Product[] = [
         id: "60g",
         name: "60 gramos",
         weight: "60g",
-        price: 1.00,
-        dozenPrice: 9.00,
-        wholesalePrice: 9 / 12, // $0.75 c/u al mayor
+        price: 1.25,
+        dozenPrice: 11.25,
+        wholesalePrice: 11.25 / 12, // $0.9375 c/u al mayor ($11.25 docena)
       },
       {
         id: "100g",
         name: "100 gramos",
         weight: "100g",
-        price: 1.50,
-        dozenPrice: 13.00,
-        wholesalePrice: 13 / 12, // ~$1.08 c/u al mayor ($13 docena)
+        price: 1.88,
+        dozenPrice: 16.25,
+        wholesalePrice: 16.25 / 12, // ~$1.35 c/u al mayor ($16.25 docena)
       },
     ],
   },
@@ -99,8 +99,8 @@ export const products: Product[] = [
     image: "/images/papas-cebolla-perejil.jpg",
     category: "papas",
     categoryLabel: "CEBOLLA & PEREJIL",
-    price: 1.00,
-    wholesalePrice: 9 / 12,
+    price: 1.25,
+    wholesalePrice: 11.25 / 12,
     wholesaleMin: 12,
     tags: ["Cebolla & Perejil", "Gourmet"],
     weight: "60g",
@@ -109,17 +109,17 @@ export const products: Product[] = [
         id: "60g",
         name: "60 gramos",
         weight: "60g",
-        price: 1.00,
-        dozenPrice: 9.00,
-        wholesalePrice: 9 / 12, // $0.75 c/u al mayor
+        price: 1.25,
+        dozenPrice: 11.25,
+        wholesalePrice: 11.25 / 12, // $0.9375 c/u al mayor ($11.25 docena)
       },
       {
         id: "100g",
         name: "100 gramos",
         weight: "100g",
-        price: 1.50,
-        dozenPrice: 13.00,
-        wholesalePrice: 13 / 12, // ~$1.08 c/u al mayor ($13 docena)
+        price: 1.88,
+        dozenPrice: 16.25,
+        wholesalePrice: 16.25 / 12, // ~$1.35 c/u al mayor ($16.25 docena)
       },
     ],
   },
@@ -130,8 +130,8 @@ export const products: Product[] = [
     image: "/images/tostones-naturales.jpg",
     category: "platano",
     categoryLabel: "PLÁTANO ARTESANAL",
-    price: 1.00,
-    wholesalePrice: 9 / 12, // $0.75 c/u al mayor ($9 docena)
+    price: 1.25,
+    wholesalePrice: 11.25 / 12, // $0.9375 c/u al mayor ($11.25 docena)
     wholesaleMin: 12,
     tags: ["Plátano Verde", "Solo Sal"],
     weight: "80g",
@@ -144,8 +144,8 @@ export const products: Product[] = [
     image: "/images/chicharron-natural.jpg",
     category: "especialidades",
     categoryLabel: "CHICHARRÓN ARTESANAL",
-    price: 2.00,
-    wholesalePrice: 13 / 12, // ~$1.08 c/u al mayor ($13 docena)
+    price: 2.50,
+    wholesalePrice: 16.25 / 12, // ~$1.35 c/u al mayor ($16.25 docena)
     wholesaleMin: 12,
     tags: ["100% Crujiente", "Artesanal"],
     weight: "50g",
@@ -158,8 +158,8 @@ export const products: Product[] = [
     image: "/images/harina-chicharron.png",
     category: "especialidades",
     categoryLabel: "ESPECIALIDAD",
-    price: 2.00,
-    wholesalePrice: 2.00,
+    price: 2.50,
+    wholesalePrice: 2.50,
     wholesaleMin: 999999,
     tags: ["250g", "100% Puro", "Cetogénico"],
     weight: "250g",
